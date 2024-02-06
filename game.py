@@ -54,15 +54,16 @@ class Game(object):
         - 5. Player Actions:
             - 5.1 Progressing clockwise through players and within player's active hands:
                 - 5.1.1 Split Pairs:
-                        5.1.4.1 If the player's initial two cards are of the same rank, they can split them into two separate hands.
-                                5.1.4.1.1 Follow the steps 5.1.1.1 to 3.1.1.1.2 for each split hand.
+                        - 5.1.1.1 If the player's initial two cards are not of the same rank, skip the rest of step 5.1.1.
+                        - 5.1.1.2 If player rejects split request, skip the rest of step 5.1.1.
+                        - 5.1.1.3 Take second card from player hand and use as first card for new hand.
+                        - 5.1.1.4 Deal one card to original hand and one card to newly created hand.
                 - 5.1.2 Double Down:
-                        5.1.2.1 Player can double their original bet and receive only one more card.
-                - 5.1.2 Hit:
-                        5.1.1.1 Player takes an additional card to increase their hand total.
-                        5.1.1.2 Repeat until the player stands or busts (hand value over 21).
-                - 5.1.3 Stand:
-                        5.1.2.1 Player keeps their current hand total and moves to the next player.
+                        - 5.1.2.1 Player can double their original bet and receive only one more card.
+                - 5.1.3 Hit:
+                        - 5.1.3.1 If player rejects hit request(i.e. player stands), player keeps their current hand total and moves to the next player/hand.
+                        - 5.1.3.2 Dealer deals card to player hand.
+                        - 5.1.3.3 Repeat until the player stands or busts (hand value over 21).
                 
 
         6. Dealer's Turn:
@@ -112,6 +113,9 @@ class Game(object):
         # Step 5 - Player Actions
         for player in self.current_round.participating_players:
             for hand in player.hands:
+                # Skip inactive hands
+                if not hand.active:
+                    continue
                 
                 # Step 5.1.1 - Split pairs
                 while hand.is_splittable() and player.is_able_to_split():

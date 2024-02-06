@@ -100,7 +100,7 @@ class Dealer(object):
         hand.doubled_down = True
         hand.active = False
         self.deal_card(player_hand=hand, table_deck=table_deck)
-        player.chips -= player.initial_bet_amount
+        player.chips -= player.current_bet_amount()
         
     
     def deal_initial_cards(self, table_deck: List[Card], participating_players: List[Player]):
