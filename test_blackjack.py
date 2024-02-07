@@ -115,12 +115,27 @@ class test_dealer(unittest.TestCase):
         pass
 
 class test_hand(unittest.TestCase):
+
     
+        
     def test_natural_blackjack(self):
         hand_with_natural_blackjack = Hand(starting_hand=[ace_of_hearts, ten_of_hearts])
         hand_without_natural_blackjack = Hand(starting_hand=[ace_of_hearts, five_of_clubs])
         self.assertTrue(hand_with_natural_blackjack.has_natural_blackjack())
         self.assertFalse(hand_without_natural_blackjack.has_natural_blackjack())
+        
+    def test_score_limits(self):
+        hand_with_five_aces_and_ten =  Hand(starting_hand=[ace_of_hearts, ace_of_hearts, ace_of_hearts, ace_of_hearts, ace_of_hearts, ten_of_hearts])
+        # Test lowest_score
+        self.assertEqual(hand_with_five_aces_and_ten.lowest_score(), 15)
+        # Test highest_score
+        self.assertEqual(hand_with_five_aces_and_ten.highest_score(), 65)
+    
+    def test_max_non_bust_score(self):
+        hand_with_five_aces_and_ten =  Hand(starting_hand=[ace_of_hearts, ace_of_hearts, ace_of_hearts, ace_of_hearts, ace_of_hearts, ten_of_hearts])
+        self.assertEqual(hand_with_five_aces_and_ten.max_non_bust_score, 15)
+        hand_with_two_aces_and_five = Hand(starting_hand=[ace_of_hearts, ace_of_spades, five_of_clubs])
+        
 
 class test_card(unittest.TestCase):
     

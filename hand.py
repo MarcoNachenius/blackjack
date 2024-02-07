@@ -11,6 +11,7 @@ class Hand(object):
             self.cards.append(first_card)
         self.active: bool = True
         self.doubled_down = False
+        self.bust = False
     
     def add_card(self, card: Card):
         """
@@ -50,5 +51,78 @@ class Hand(object):
             if self.cards[i].points == 10:
                 ten_point_card = True
         if ace_card and ten_point_card:
+            return True
+        return False
+    
+    def is_busted(self) -> bool:
+        """
+        Returns true if player hand is bust
+        """
+        return self.bust
+        
+    def lowest_score(self) -> int:
+        """
+        Returns point amount for hand where all Aces are given 1 point
+        """
+        score = 0
+        for card in self.cards:
+            score += card.points
+        return score
+    
+    def highest_score(self) -> int:
+        """
+        Returns point amount for hand where all Aces are given 11 points
+        """
+        score = 0
+        for card in self.cards:
+            if card.rank == "Ace":
+                score += 11
+                continue
+            score += card.points
+        return score
+    
+    def set_busted(self):
+        """
+        Changes bust status of hand(self.bust) to True
+        """
+        self.bust = True
+        
+    def max_non_bust_score(self) -> int:
+        """
+        Returns the highest possible point count of a hand without it being bust.
+        If the hand is bust, this method will return 0
+        """
+        # Check if hand is bust
+        if self.is_busted():
+            return 0
+        # Check if lowest point count is over 21
+        if self.lowest_score > 21:
+            return 0
+        # Check for Aces in hand
+        if self.amount_of_aces == 0:
+            return self.lowest_score()
+        # Check for natural blackjack
+        if self.has_natural_blackjack():
+            return 21
+        # Check for regular blackjack
+        if self.highest_score() < 22:
+            return self.highest_score()
+        
+        # Calculate highest non-bust amount if hand has multiple Aces
+        multi_ace_score = self.lowest_score()
+        for _ in range(self.amount_of_aces()):
+            if multi_ace_score + 10 < 22:
+                multi_ace_score += 10
+        return multi_ace_score 
+    
+    def amount_of_aces(self) -> int:
+        """
+        Returns the number of aces in a hand
+        """
+        ace_count = 0
+        for card in self.cards:
+            if card.rank == "Ace":
+                ace_count += 1
+        if ace_count > 1:
             return True
         return False

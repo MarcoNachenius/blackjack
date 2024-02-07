@@ -10,6 +10,8 @@ class Round(object):
         self.participating_players: List[Player] = participating_players or []
         self.end_of_round = False
     
+        
+    
     def send_bet_requests(self, all_players: List[Player]):
         """
         Populates self.participating_players list.
@@ -55,8 +57,6 @@ class Round(object):
             - 4.2 Remove player from round's participating players list
         """
         for player in participating_players:
-            if player.hands[0].has_natural_blackjack:
-                # Step 4.1
-                dealer.award_natural_blackjack_win(player=player)
-                # Step 4.2
-                participating_players.remove(player)
+            for hand in player.hands:
+                if hand.has_natural_blackjack():
+                    dealer.award_natural_blackjack_win(hand=hand, player=player)

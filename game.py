@@ -30,7 +30,6 @@ class Game(object):
             pass
     
     def play_new_round(self):
-        
         """
         Initiates a new round of Blackjack.
 
@@ -64,12 +63,11 @@ class Game(object):
                         - 5.1.3.1 If player rejects hit request(i.e. player stands), player keeps their current hand total and moves to the next player/hand.
                         - 5.1.3.2 Dealer deals card to player hand.
                         - 5.1.3.3 Repeat until the player stands or busts (hand value over 21).
-                
 
         6. Dealer's Turn:
-            6.1 Once all players have completed their actions, the dealer reveals their face-down card.
-            6.2 The dealer hits until they have a total of 17 or higher.
-            6.3 If the dealer busts, all remaining players win.
+            - 6.1 Once all players have completed their actions, the dealer reveals their face-down card.
+            - 6.2 The dealer hits until they have a total of 17 or higher.
+            - 6.3 If the dealer busts, all remaining players win.
 
         7. Compare Hands:
             7.1 Compare each player's hand to the dealer's hand:
@@ -93,9 +91,14 @@ class Game(object):
         
         # Initiate new round
         self.current_round = Round(dealer=self.dealer)
+        print("Initiating new round")
         
-        # STEP 1 - Betting phase 
-        self.current_round.send_bet_requests(all_players=self.all_players)        
+        # STEP 1 - Betting phase
+        print("Collecting bets from players") 
+        self.current_round.send_bet_requests(all_players=self.all_players)
+        print("The current players will be taking part in the round:")
+        for i, player in enumerate(self.current_round.participating_players):
+            print(f'Player {i}: {player.player_name}')        
         
         # STEP 2 - Initial deal
         # 2.1 Dealer deals two cards for every player who has placed a bet
@@ -112,6 +115,10 @@ class Game(object):
         
         # Step 5 - Player Actions
         for player in self.current_round.participating_players:
+            # Skip player if it has no active hands
+            if not player.has_active_hands():
+                continue
+            
             for hand in player.hands:
                 # Skip inactive hands
                 if not hand.active:
@@ -127,14 +134,44 @@ class Game(object):
                 if player.is_able_to_double_down and player.request_double_down:
                     self.dealer.double_down_player_hand(hand=hand, player=player, table_deck=self.table_deck)
                 
-                # 
+                # Step 5.1.3 - Hit
+                while hand.active and not hand.bust:
+                    if player.request_hit():
+                        self.dealer.hit_player_hand(hand=hand, table_deck=self.table_deck)
+                        continue
+                    # Assumes player chooses to stand
+                    hand.deactivate()
+        
+        # Step 6 - Dealer's turn
+        # 6.1 - Dealer reveals face-down card
+        self.dealer.hand.cards[1].make_visible()
+        # 6.2 - The dealer hits until they have a total of 17 or higher.
+        while self.dealer.hand.is_busted == False and self.dealer.hand.max_non_bust_score < 18:
+            self.dealer.deal_card(player_hand=self.dealer.hand, table_deck=self.table_deck)
+            # Check for hand bust
+            if self.dealer.hand.max_non_bust_score == 0:
+                self.dealer.hand.set_busted()
+        # 6.3 - If the dealer busts, all remaining players win.
+        if self.dealer.hand.is_busted():
+            pass
+                    
     
     def add_player(self, player: Player):
         """
         Adds player to self.all_players list
+        
+        Player is not added if it is in list of all players
         """
-        # Exceptions
-        #
-        # Untested
-        #
+        # Check if player is already in list
+        if player in self.all_players:
+            return
         self.all_players.append(player)
+    
+    def remove_player(self, player: Player):
+        """
+        Removes player from self.all_players list
+        """
+        # Check is player is in all_players list
+        if player not in self.all_players:
+            return
+        self.all_players.remove(player)

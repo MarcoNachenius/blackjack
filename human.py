@@ -31,7 +31,7 @@ class Human(Player):
         total_bet_amount = int(input("Enter the amount of chips you would like to bet"))
         return total_bet_amount
     
-    def request_hitme(self, split_hand=False) -> bool:
+    def request_hit(self, split_hand=False) -> bool:
         hitme_request = input("Would you like to add card to hand? [y/n]")
     
     def request_double_down(self, dealer_card: Card):

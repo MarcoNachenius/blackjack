@@ -59,7 +59,7 @@ class Dealer(object):
         # Subtract bet amount from player
         player.chips -= player.initial_bet_amount
     
-    def award_natural_blackjack_win( self, player: Player):
+    def award_natural_blackjack_win( self, hand: Hand, player: Player):
         """
         Transfers winning amount to player's chips
         
@@ -67,10 +67,8 @@ class Dealer(object):
         Assumes player has natural blackjack\n
         If player is awarded an amount of chips that is not a whole number, the amount will be floored(rounded down). 
         """
-        player_win_amount = player.initial_bet_amount
-        if player.is_insured:
-            player_win_amount /= 2
-        player.add_chips(math.floor(player_win_amount * 1.5) + player_win_amount)
+        player.add_chips(math.floor(player.current_bet_amount() * 1.5) + player.current_bet_amount())
+        hand.deactivate()
     
     def insure_player(self, player: Player):
         """
@@ -81,13 +79,17 @@ class Dealer(object):
             # Change player insurance status
             player.is_insured = True
     
-    def hit_player_hand(self, hand: Hand, player: Player):
+    def hit_player_hand(self, hand: Hand, table_deck: List[Card]):
         """
-        5.1.1 Hit:
-            5.1.1.1 Player takes an additional card to increase their hand total.
-            5.1.1.2 Repeat until the player stands or busts (hand value over 21).
+        Add card to player hand\n
+        If player hand is bust:
+            - Bust status adjusted
+            - Hand deactivated
         """
-        pass
+        self.deal_card(player_hand=hand, table_deck=table_deck)
+        if hand.lowest_score() > 21:
+            hand.set_busted()
+            hand.deactivate()
     
     def double_down_player_hand(self, hand: Hand, player: Player, table_deck: List[Card]):
         """

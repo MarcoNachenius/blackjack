@@ -13,6 +13,9 @@ class Card(object):
         self.visible = visible
     
     def make_visible(self):
+        """
+        Turns on card visibility
+        """
         self.visible = True
     
     def full_name(self) -> str:

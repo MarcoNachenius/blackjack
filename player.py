@@ -104,7 +104,7 @@ class Player(ABC):
         pass
     
     @abstractclassmethod
-    def request_hitme(self, dealer_card: Card) -> bool:
+    def request_hit(self) -> bool:
         """
         Returns True if a player wants dealer to add card to hand
         """
