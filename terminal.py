@@ -1,6 +1,6 @@
 from dealer import Dealer
 from typing import List
-from player import Player
+from players.player import Player
 class Terminal(object):
     """
     The Terminal class controls the display of all multi-line displays 

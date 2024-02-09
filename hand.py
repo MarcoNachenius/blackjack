@@ -96,7 +96,7 @@ class Hand(object):
         if self.is_busted():
             return 0
         # Check if lowest point count is over 21
-        if self.lowest_score > 21:
+        if self.lowest_score() > 21:
             return 0
         # Check for Aces in hand
         if self.amount_of_aces == 0:
@@ -110,9 +110,8 @@ class Hand(object):
         
         # Calculate highest non-bust amount if hand has multiple Aces
         multi_ace_score = self.lowest_score()
-        for _ in range(self.amount_of_aces()):
-            if multi_ace_score + 10 < 22:
-                multi_ace_score += 10
+        if self.amount_of_aces() > 0 and multi_ace_score + 10 < 22:
+            return multi_ace_score + 10
         return multi_ace_score 
     
     def amount_of_aces(self) -> int:

@@ -4,7 +4,7 @@ import copy
 from card import Card
 from constants import Deck
 from dealer import Dealer
-from human import Human
+from players.human import Human
 from game import Game
 from hand import Hand
 
@@ -115,9 +115,7 @@ class test_dealer(unittest.TestCase):
         pass
 
 class test_hand(unittest.TestCase):
-
     
-        
     def test_natural_blackjack(self):
         hand_with_natural_blackjack = Hand(starting_hand=[ace_of_hearts, ten_of_hearts])
         hand_without_natural_blackjack = Hand(starting_hand=[ace_of_hearts, five_of_clubs])
@@ -133,10 +131,10 @@ class test_hand(unittest.TestCase):
     
     def test_max_non_bust_score(self):
         hand_with_five_aces_and_ten =  Hand(starting_hand=[ace_of_hearts, ace_of_hearts, ace_of_hearts, ace_of_hearts, ace_of_hearts, ten_of_hearts])
-        self.assertEqual(hand_with_five_aces_and_ten.max_non_bust_score, 15)
+        self.assertEqual(hand_with_five_aces_and_ten.max_non_bust_score(), 15)
         hand_with_two_aces_and_five = Hand(starting_hand=[ace_of_hearts, ace_of_spades, five_of_clubs])
+        self.assertEqual(hand_with_two_aces_and_five.max_non_bust_score(), 17)
         
-
 class test_card(unittest.TestCase):
     
     def test_full_names(self):
@@ -172,6 +170,11 @@ class test_deck_creation(unittest.TestCase):
 
 class test_player(unittest.TestCase):
     pass
+
+class test_round(unittest.TestCase):
+    pass
+
+
 
 if __name__ == '__main__':
     unittest.main()

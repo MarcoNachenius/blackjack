@@ -1,4 +1,4 @@
-from player import Player
+from players.player import Player
 from dealer import Dealer
 import constants
 from typing import List
@@ -46,8 +46,19 @@ class Round(object):
         pass
     
     
-    def send_insurance_requests(self):
-        pass
+    def send_insurance_requests(self, dealer: Dealer):
+        """
+        Sends insurance and even money requests to players whenever applicable
+        
+        If the dealer has an Ace or a tem-point card:
+            - Send even money requests to players that have natural blackjack
+            - Send insurance requests to players that don't have natural blackjack
+        """
+        if dealer.hand.cards[0].rank == "Ace" or dealer.hand.cards[0].points == 10:
+            for player in self.participating_players:
+                # Send insurance requests
+                if player.request_insurance():
+                    dealer.insure_player(player=player)
     
     def award_natural_blackjack_wins(self, dealer: Dealer, participating_players: List[Player]):
         """

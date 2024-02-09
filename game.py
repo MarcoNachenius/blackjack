@@ -1,4 +1,4 @@
-from player import Player
+from players.player import Player
 from dealer import Dealer
 from round import Round
 from card import Card
@@ -48,7 +48,7 @@ class Game(object):
 
         - 4. Check for Player Blackjack:
             - 4.1 If any player has a natural blackjack, pay them 3:2 on their bet.
-            - 4.2 Remove player from round's participating players list
+            - 4.2 If player has natural blackjack and dealer has Ace or ten-point, offer even money
 
         - 5. Player Actions:
             - 5.1 Progressing clockwise through players and within player's active hands:
@@ -105,8 +105,8 @@ class Game(object):
         self.dealer.deal_initial_cards(table_deck=self.table_deck, participating_players=self.current_round.participating_players)
         
         # STEP 3 - Check for neutrals
-        # 3.1 If the dealer's face-up card is an Ace or a 10-value card, check for a natural blackjack
-        self.current_round.send_insurance_requests()
+        # 3.1 If the dealer's face-up card is an Ace or a 10-value card, offer players insurance.
+        self.current_round.send_insurance_requests(dealer=self.dealer)
         
         # STEP 4 - Check for Player Blackjack:
         #    4.1 If any player has a natural blackjack, pay them 3:2 on their bet.

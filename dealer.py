@@ -1,6 +1,6 @@
 from card import Card
 from hand import Hand
-from player import Player
+from players.player import Player
 
 from typing import List
 import random
@@ -75,10 +75,7 @@ class Dealer(object):
         Requests if a player wants to insure hand.
         If player accepts request, insurance status is turned on (player.is_insured=True)
         """
-        if player.request_insurance():
-            # Change player insurance status
-            player.is_insured = True
-    
+        player.insure()
     def hit_player_hand(self, hand: Hand, table_deck: List[Card]):
         """
         Add card to player hand\n
@@ -119,3 +116,9 @@ class Dealer(object):
         # 2.2 Dealer deals two cards for themselves, one face-up and one face-down
         self.deal_card(table_deck=table_deck, player_hand=self.hand)
         self.deal_card(table_deck=table_deck, player_hand=self.hand, hide_card=True)
+    
+    def insure_player_even_money(self, player: Player):
+        """
+        Awards player even money insurance
+        """
+        player.enable_even_money()
