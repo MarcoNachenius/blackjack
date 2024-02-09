@@ -4,11 +4,14 @@ import copy
 from card import Card
 from constants import Deck
 from dealer import Dealer
-from players.human import Human
 from game import Game
 from hand import Hand
+# Player objects
+from players.human import Human
+from players.bots.yesman import Yesman
+from players.bots.noman import Noman
 
-# Sample objects
+# Sample Cards
 ace_of_spades = Card(rank="Ace", suit="Spades", points=1)
 ace_of_hearts = Card(rank="Ace", suit="Hearts", points=1)
 queen_of_diamonds = Card(rank="Queen", suit="Diamonds", points=10)
@@ -82,8 +85,7 @@ class test_dealer(unittest.TestCase):
         self.assertEqual(len(table_deck), 0)
         self.assertEqual(len(test_player.hands[0].cards), 2)
         self.assertEqual(len(dealer.hand.cards), 2)
-        
-    
+           
     def test_split_player_hand(self):
         main_hand_card = ace_of_spades
         split_hand_card = ace_of_hearts
@@ -96,7 +98,7 @@ class test_dealer(unittest.TestCase):
         split_hand_after_split = Hand(first_card=split_hand_card)
         
         # Execute test
-        player = Human(player_name="test" , custom_starting_hands=[main_hand_before_split])
+        player = Human(player_name="test" , custom_starting_hands=[main_hand_before_split], custom_starting_chips=500, custom_initial_bet_amount=10)
         dealer = Dealer()  
         dealer.split_player_hand(split_hand=main_hand_before_split, player=player, table_deck=table_deck)
         
@@ -172,8 +174,24 @@ class test_player(unittest.TestCase):
     pass
 
 class test_round(unittest.TestCase):
-    pass
+    
+    def test_send_bet_requests(self):
+        pass
 
+    def test_send_split_requests(self):
+        pass
+    
+    def test_send_double_down_requests(self):
+        pass
+    
+    def test_send_insurance_requests(self):
+        yesman = Yesman(player_name="Test Yesman", custom_starting_chips=20)
+        dealer_with_potential_blackjack = Dealer(starting_hand=[ace_of_spades])
+        dealer_without_potential_blackjack = Dealer(starting_hand=[five_of_clubs])
+        
+    
+    def test_(self):
+        pass
 
 
 if __name__ == '__main__':

@@ -4,6 +4,7 @@ import constants
 
 from typing import List
 from abc import ABC, abstractclassmethod
+import math
 
 class Player(ABC):
     """
@@ -14,22 +15,14 @@ class Player(ABC):
     
     Only players control methods that subtract chips from their balance.
     """
-    def __init__(self, player_name: str, custom_starting_hands: List[Hand] = None, custom_starting_chips: int = None):
+    def __init__(self, player_name: str, custom_starting_hands: List[Hand] = None, custom_starting_chips: int = None, custom_initial_bet_amount: int = 0):
         self.player_name = player_name # Required field
         self.hands: List[Hand] = custom_starting_hands or [Hand()]
         self.chips: int = custom_starting_chips or constants.STARTING_CHIPS
         # Round properties
-        self.initial_bet_amount = 0
+        self.initial_bet_amount = 0 or custom_initial_bet_amount
         self.total_bet_amount: int = 0
         self.is_insured: bool = False
-    
-    def current_bet_amount(self): 
-        """
-        If player is insured, halves the amount of chips that can be doubled/split 
-        """
-        if self.is_insured:
-            return self.current_bet_amount / 2
-        return self.initial_bet_amount
     
     def add_chips(self, amount: int):
         self.chips += amount
@@ -44,6 +37,15 @@ class Player(ABC):
         for hand in self.hands:
             if hand.active:
                 return True
+        return False
+    
+    def is_able_to_insure(self) -> bool:
+        """
+        Returns true if player has enough chips available to buy insurance.
+        If insurance amount is not a whole number, it will be rounded up(ceiling) to the nearest int 
+        """
+        if self.chips > math.ceil(self.initial_bet_amount * 0.5):
+            return True
         return False
     
     def is_able_to_split(self) -> bool:
@@ -85,10 +87,23 @@ class Player(ABC):
     
     def insure(self):
         """
+        Subtracts 50%(ceiling) of initial bet from player chips
         Changes insurance status of player to True.
         """
         self.is_insured = True
-        
+        self.subtract_chips(math.ceil(self.initial_bet_amount * 0.5))
+    
+    def add_chips(self, amount: int):
+        """
+        Adds amount(int) to player chips
+        """
+        self.chips += amount
+    
+    def subtract_chips(self, amount: int):
+        """
+        Subtracts amount(int) from player chips
+        """
+        self.chips -= amount
     
     @abstractclassmethod
     def request_split_pair(self) -> bool:
@@ -96,7 +111,6 @@ class Player(ABC):
         Requests if a player wants to split pair after first card of dealer is shown\n
         Returns True if the player has decided to split hand. \n
         Removes the second card from the player hand and places it into the players' split hand
-        TODO\n
         """
         pass
     

@@ -57,7 +57,7 @@ class Dealer(object):
         self.deal_card(player_hand=split_hand, table_deck=table_deck)
         self.deal_card(player_hand=new_hand, table_deck=table_deck)
         # Subtract bet amount from player
-        player.chips -= player.initial_bet_amount
+        player.subtract_chips(amount=player.initial_bet_amount)
     
     def award_natural_blackjack_win( self, hand: Hand, player: Player):
         """

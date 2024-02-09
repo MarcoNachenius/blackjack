@@ -7,14 +7,13 @@ from typing import List
 
 class Human(Player):
     """docstring for Human."""
-    def __init__(self, player_name: str, custom_starting_hands: List[Hand] = None, custom_starting_chips: int = None):
-        super().__init__(player_name=player_name ,custom_starting_hands=custom_starting_hands , custom_starting_chips=custom_starting_chips)
+    def __init__(self, player_name: str, custom_starting_hands: List[Hand] = None, custom_starting_chips: int = None, custom_initial_bet_amount: int = None):
+        super().__init__(player_name=player_name ,custom_starting_hands=custom_starting_hands , custom_starting_chips=custom_starting_chips, custom_initial_bet_amount=custom_initial_bet_amount)
     
     def request_split_pair(self) -> bool:
-        self.split_hand.append(self.hand.pop(1))
-        self.has_split_pair = True
-        # Double bet amount
-        self.total_bet_amount += self.initial_bet_amount
+        response = input("Split pair? [y/n]")
+        if response == "y":
+            return True
     
     def request_round_participation(self) -> bool:
         # Exeptions
@@ -33,6 +32,9 @@ class Human(Player):
     
     def request_hit(self, split_hand=False) -> bool:
         hitme_request = input("Would you like to add card to hand? [y/n]")
+        if hitme_request == "y":
+            return True
+        return False
     
     def request_double_down(self, dealer_card: Card):
         pass
