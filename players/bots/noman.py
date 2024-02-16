@@ -10,8 +10,8 @@ class Noman(Player):
         - Any requests that are given will be rejected
         - Player will always place initial bet of 10 chips
     """
-    def __init__(self, player_name: str, custom_starting_hands: List[Hand] = None, custom_starting_chips: int = None):
-        super().__init__(player_name=player_name ,custom_starting_hands=custom_starting_hands , custom_starting_chips=custom_starting_chips)
+    def __init__(self, player_name: str, custom_starting_hands: List[Hand] = None, custom_starting_chips: int = None, custom_initial_bet_amount: int = None):
+        super().__init__(player_name=player_name ,custom_starting_hands=custom_starting_hands , custom_starting_chips=custom_starting_chips, custom_initial_bet_amount=custom_initial_bet_amount)
         
     def request_split_pair(self) -> bool:
         return False

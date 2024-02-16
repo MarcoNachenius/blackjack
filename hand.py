@@ -10,8 +10,15 @@ class Hand(object):
         if first_card:
             self.cards.append(first_card)
         self.active: bool = True
-        self.doubled_down = False
-        self.bust = False
+        self.doubled_down: bool = False
+        self.bust: bool = False
+        self.rejected_split_request: bool = False
+    
+    def reject_split_request(self):
+        """
+        Enables status of hand to indicate that split request was received and rejected
+        """
+        self.rejected_split_request = True
     
     def add_card(self, card: Card):
         """
@@ -32,9 +39,23 @@ class Hand(object):
         # Hand must have two cards in order to be split
         if len(self.cards) != 2:
             return False
-        if self.cards[0].rank == self.cards[1].rank:
-            return True
-        return False
+        if self.cards[0].rank != self.cards[1].rank:
+            return False
+        if self.rejected_split_request:
+            return False
+        return True
+    
+    def full_names_list(self) -> List[str]:
+        """
+        Returns a list of the full names of every card in a hand. \n
+        Example:\n
+        ["Ace of Spades", "Queen of Hearts"]
+        """
+        full_names_list = []
+        for card in self.cards:
+            full_names_list.append(card.full_name())
+        return full_names_list
+        
         
     def has_natural_blackjack(self) -> bool:
         """

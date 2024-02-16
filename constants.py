@@ -30,7 +30,7 @@ MAX_HAND_LIMIT = 4
 
 class Deck(object):
     """
-    Deck docstr
+    Deck doc string
     """
     @classmethod
     def full_deck(cls) -> List[Card]:

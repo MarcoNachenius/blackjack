@@ -15,7 +15,7 @@ class Player(ABC):
     
     Only players control methods that subtract chips from their balance.
     """
-    def __init__(self, player_name: str, custom_starting_hands: List[Hand] = None, custom_starting_chips: int = None, custom_initial_bet_amount: int = 0):
+    def __init__(self, player_name: str, custom_starting_hands: List[Hand] = None, custom_starting_chips: int = 0, custom_initial_bet_amount: int = 0):
         self.player_name = player_name # Required field
         self.hands: List[Hand] = custom_starting_hands or [Hand()]
         self.chips: int = custom_starting_chips or constants.STARTING_CHIPS
@@ -51,24 +51,20 @@ class Player(ABC):
     def is_able_to_split(self) -> bool:
         """
         Returns True if:
+            - Player has not previously rejected split request
             - Player has enough chips
             - Player has less than max allowed hands
         """
+        # Check for previous split request
         # Check if player has less than max allowed hands
-        if len(self.hands) == constants.MAX_HAND_LIMIT:
+        if len(self.hands) >= constants.MAX_HAND_LIMIT:
             return False
-        
-        # Determine bet amount
-        potential_bet_amount = self.initial_bet_amount
-        # Check for player insurance
-        if self.is_insured:
-            potential_bet_amount /= 2
         
         # Check if player has enough chips
-        if potential_bet_amount < self.chips:
+        if self.initial_bet_amount > self.chips:
             return False
         
-        return False
+        return True
     
     def is_able_to_double_down(self) -> bool:
         """

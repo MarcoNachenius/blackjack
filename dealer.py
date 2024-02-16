@@ -18,6 +18,7 @@ class Dealer(object):
         """
         self.hand: Hand = starting_hand or Hand()
     
+    
     def deal_card(self, player_hand: Hand, table_deck: List[Card], hide_card = False):
         """
         The Dealer removes a random card from the table deck and adds it to a player's hand. \n
@@ -47,6 +48,7 @@ class Dealer(object):
         """
         # Skip method if player does not have a pair
         if not split_hand.is_splittable():
+            split_hand.reject_split_request()
             return
         # Create new hand
         # First card of new hand is second card of split_hand
@@ -67,7 +69,7 @@ class Dealer(object):
         Assumes player has natural blackjack\n
         If player is awarded an amount of chips that is not a whole number, the amount will be floored(rounded down). 
         """
-        player.add_chips(math.floor(player.current_bet_amount() * 1.5) + player.current_bet_amount())
+        player.add_chips(math.floor(player.initial_bet_amount * 1.5) + player.initial_bet_amount)
         hand.deactivate()
     
     def insure_player(self, player: Player):
@@ -75,7 +77,9 @@ class Dealer(object):
         Requests if a player wants to insure hand.
         If player accepts request, insurance status is turned on (player.is_insured=True)
         """
-        player.insure()
+        if player.is_able_to_insure() and player.request_insurance():
+            player.insure()
+    
     def hit_player_hand(self, hand: Hand, table_deck: List[Card]):
         """
         Add card to player hand\n
@@ -99,7 +103,7 @@ class Dealer(object):
         hand.doubled_down = True
         hand.active = False
         self.deal_card(player_hand=hand, table_deck=table_deck)
-        player.chips -= player.current_bet_amount()
+        player.chips -= player.initial_bet_amount
         
     
     def deal_initial_cards(self, table_deck: List[Card], participating_players: List[Player]):
@@ -117,8 +121,3 @@ class Dealer(object):
         self.deal_card(table_deck=table_deck, player_hand=self.hand)
         self.deal_card(table_deck=table_deck, player_hand=self.hand, hide_card=True)
     
-    def insure_player_even_money(self, player: Player):
-        """
-        Awards player even money insurance
-        """
-        player.enable_even_money()

@@ -16,7 +16,7 @@ class Human(Player):
             return True
     
     def request_round_participation(self) -> bool:
-        # Exeptions
+        # Exceptions
         # Does player have enough chips to bet?
         participation_request = input("Would you like to play the next round? [y/n]")
         if participation_request == "y":
@@ -30,18 +30,21 @@ class Human(Player):
         total_bet_amount = int(input("Enter the amount of chips you would like to bet"))
         return total_bet_amount
     
-    def request_hit(self, split_hand=False) -> bool:
-        hitme_request = input("Would you like to add card to hand? [y/n]")
-        if hitme_request == "y":
+    def request_hit(self) -> bool:
+        hit_request = input("Would you like to add a card to hand? [y/n]")
+        if hit_request == "y":
             return True
         return False
     
-    def request_double_down(self, dealer_card: Card):
-        pass
+    def request_double_down(self):
+        double_down = input("Would you like to double down your hand? [y/n]")
+        if double_down == "y":
+            return True
+        return False
+    
     
     def request_insurance(self) -> bool:
         insurance_request = input("Would you like to buy insurance? [y/n]")
         if insurance_request == "y":
             return True
-        # Returns false for any other value than "y"
         return False

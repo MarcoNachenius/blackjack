@@ -37,10 +37,14 @@ class Round(object):
             # Dealer only sends split request if hand has pair and player has less than max
             # allowed number of hands
             for hand in player.hands:
-                while hand.is_splittable() and player.is_able_to_split():
+                if hand.rejected_split_request:
+                    continue
+                while hand.is_splittable() and player.is_able_to_split() and not hand.rejected_split_request:
                     # Send split request to player
                     if player.request_split_pair():
                         dealer.split_player_hand(split_hand=hand, player=player, table_deck=table_deck)
+                    else: 
+                        hand.reject_split_request()
                 
     def send_double_down_requests(self):
         pass
@@ -54,7 +58,7 @@ class Round(object):
             - Send even money requests to players that have natural blackjack
             - Send insurance requests to players that don't have natural blackjack
         """
-        if dealer.hand.cards[0].rank == "Ace" or dealer.hand.cards[0].points == 10:
+        if dealer.hand[0].rank == "Ace" or dealer.hand[0].points == 10:
             for player in self.participating_players:
                 # Send insurance requests
                 if player.request_insurance():
