@@ -92,7 +92,7 @@ class Dealer(object):
             hand.set_busted()
             hand.deactivate()
     
-    def double_down_player_hand(self, hand: Hand, player: Player, table_deck: List[Card]):
+    def double_down_player_hand(self, player_hand: Hand, player: Player, table_deck: List[Card]):
         """
         Does
         - Changes double down status
@@ -100,10 +100,10 @@ class Dealer(object):
         todo:
         - Check if hand is in player_hand
         """
-        hand.doubled_down = True
-        hand.active = False
-        self.deal_card(player_hand=hand, table_deck=table_deck)
-        player.chips -= player.initial_bet_amount
+        player_hand.doubled_down = True
+        player_hand.deactivate()
+        self.deal_card(player_hand=player_hand, table_deck=table_deck)
+        player.subtract_chips(player.initial_bet_amount)
         
     
     def deal_initial_cards(self, table_deck: List[Card], participating_players: List[Player]):

@@ -30,7 +30,10 @@ class Human(Player):
         total_bet_amount = int(input("Enter the amount of chips you would like to bet"))
         return total_bet_amount
     
-    def request_hit(self) -> bool:
+    def request_hit(self, hand: Hand) -> bool:
+        print("Hand:")
+        for card in hand.cards:
+            print(card.full_name())
         hit_request = input("Would you like to add a card to hand? [y/n]")
         if hit_request == "y":
             return True

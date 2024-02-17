@@ -121,15 +121,15 @@ class Player(ABC):
         pass
     
     @abstractclassmethod
-    def request_hit(self) -> bool:
+    def request_hit(self, hand: Hand) -> bool:
         """
         Returns True if a player wants dealer to add card to hand
         """
     
     @abstractclassmethod
-    def request_double_down(self, dealer_card: Card):
+    def request_double_down(self, hand: Hand):
         """
-        Player only receives double down request on first round
+        Returns True if player decides to double down a hand
         """
     
     @abstractclassmethod

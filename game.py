@@ -29,7 +29,7 @@ class Game(object):
         while self.in_progress:
             pass
     
-    def play_new_round(self):
+    def start_new_round(self):
         """
         Initiates a new round of Blackjack.
 
@@ -44,11 +44,6 @@ class Game(object):
             - 3.1 If the dealer's face-up card is not an Ace or a 10-point card, skip this of this step.
             - 3.2 If player rejects insurance, skip the rest of this step.
             - 3.3 Collect half of the player's original bet for insurance.
-            - 3.4 Pay 2:1 on the insurance bet if the dealer has a natural blackjack.
-
-        - 4. Check for Player Blackjack:
-            - 4.1 If any player has a natural blackjack, pay them 3:2 on their bet.
-            - 4.2 If player has natural blackjack and dealer has Ace or ten-point, offer even money
 
         - 5. Player Actions:
             - 5.1 Progressing clockwise through players and within player's active hands:
@@ -94,66 +89,43 @@ class Game(object):
         print("Initiating new round")
         
         # STEP 1 - Betting phase
-        print("Collecting bets from players") 
-        self.current_round.send_bet_requests(all_players=self.all_players)
-        print("The current players will be taking part in the round:")
-        for i, player in enumerate(self.current_round.participating_players):
-            print(f'Player {i}: {player.player_name}')        
+        self.current_round.send_bet_requests(all_players=self.all_players)      
         
         # STEP 2 - Initial deal
         # 2.1 Dealer deals two cards for every player who has placed a bet
+        # 2.2 Dealer deals two cards for themselves, one face-up and one face-down.
         self.dealer.deal_initial_cards(table_deck=self.table_deck, participating_players=self.current_round.participating_players)
         
         # STEP 3 - Check for neutrals
         # 3.1 If the dealer's face-up card is an Ace or a 10-value card, offer players insurance.
         self.current_round.send_insurance_requests(dealer=self.dealer)
         
-        # STEP 4 - Check for Player Blackjack:
-        #    4.1 If any player has a natural blackjack, pay them 3:2 on their bet.
-        #    4.2 Skip to the end of the round for players with blackjack.
-        self.current_round.award_natural_blackjack_wins(dealer=self.dealer, participating_players=self.current_round.participating_players)
+        # To be refactored for 4.1.1
+        self.current_round.send_split_requests(dealer=self.dealer, table_deck=self.table_deck)
         
-        # Step 5 - Player Actions
+        # Step 4 - Player Actions
+        #4.1 Progressing clockwise through players and within player's active hands
         for player in self.current_round.participating_players:
-            # Skip player if it has no active hands
-            if not player.has_active_hands():
-                continue
-            
+            # 4.1.1 Split
             for hand in player.hands:
-                # Skip inactive hands
-                if not hand.active:
-                    continue
+                # 4.1.2 Double down
+                if player.request_double_down(hand=hand):
+                    self.dealer.double_down_player_hand(player_hand=hand, player=player, table_deck=self.table_deck)
+                # 4.1.3 Hit
+                while hand.is_busted() == False and player.request_double_down(hand=hand):
+                    self.dealer.hit_player_hand(hand=hand, table_deck=self.table_deck)
                 
-                # Step 5.1.1 - Split pairs
-                while hand.is_splittable() and player.is_able_to_split():
-                    # Send split request to player
-                    if player.request_split_pair():
-                        self.dealer.split_player_hand(split_hand=hand, player=player, table_deck=self.table_deck)
-                
-                # Step 5.1.2 - Double down 
-                if player.is_able_to_double_down and player.request_double_down:
-                    self.dealer.double_down_player_hand(hand=hand, player=player, table_deck=self.table_deck)
-                
-                # Step 5.1.3 - Hit
-                while hand.active and not hand.bust:
-                    if player.request_hit():
-                        self.dealer.hit_player_hand(hand=hand, table_deck=self.table_deck)
-                        continue
-                    # Assumes player chooses to stand
-                    hand.deactivate()
+                hand.deactivate()
         
         # Step 6 - Dealer's turn
         # 6.1 - Dealer reveals face-down card
         self.dealer.hand.cards[1].make_visible()
         # 6.2 - The dealer hits until they have a total of 17 or higher.
-        while self.dealer.hand.is_busted == False and self.dealer.hand.max_non_bust_score < 18:
+        while self.dealer.hand.is_busted() == False and self.dealer.hand.max_non_bust_score() < 18:
             self.dealer.deal_card(player_hand=self.dealer.hand, table_deck=self.table_deck)
             # Check for hand bust
-            if self.dealer.hand.max_non_bust_score == 0:
+            if self.dealer.hand.max_non_bust_score() == 0:
                 self.dealer.hand.set_busted()
-        # 6.3 - If the dealer busts, all remaining players win.
-        if self.dealer.hand.is_busted():
-            pass
                     
     
     def add_player(self, player: Player):

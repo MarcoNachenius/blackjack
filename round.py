@@ -63,15 +63,3 @@ class Round(object):
                 # Send insurance requests
                 if player.request_insurance():
                     dealer.insure_player(player=player)
-    
-    def award_natural_blackjack_wins(self, dealer: Dealer, participating_players: List[Player]):
-        """
-        Fulfills following steps of round: \n
-        - 4. Check for Player Blackjack:
-            - 4.1 If any player has a natural blackjack, pay them 3:2 on their bet.
-            - 4.2 Remove player from round's participating players list
-        """
-        for player in participating_players:
-            for hand in player.hands:
-                if hand.has_natural_blackjack():
-                    dealer.award_natural_blackjack_win(hand=hand, player=player)
