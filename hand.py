@@ -62,33 +62,32 @@ class Hand(object):
         Checks the first two cards of a hand for a natural blackjack. 
         Returns True if one card is an Ace and the other is a 10-point card
         """
-        ace_card = False
-        ten_point_card = False
+        # Check if hand is appropriate size
+        if len(self.cards) != 2:
+            return False
+        # Check for presence of 10 point card and ace
+        found_ace_card = False
+        found_ten_point_card = False
         for i in range(2):
             # Check for aces
             if self.cards[i].rank == "Ace":
-                ace_card = True
+                found_ace_card = True
             # Check for 10-point card
             if self.cards[i].points == 10:
-                ten_point_card = True
-        if ace_card and ten_point_card:
-            return True
-        return False
+                found_ten_point_card = True
+        return bool(found_ace_card and found_ten_point_card)
     
     def is_busted(self) -> bool:
         """
         Returns true if player hand is bust
         """
-        return self.bust
+        return self.lowest_score() > 21
         
     def lowest_score(self) -> int:
         """
         Returns point amount for hand where all Aces are given 1 point
         """
-        score = 0
-        for card in self.cards:
-            score += card.points
-        return score
+        return sum(card.points for card in self.cards)
     
     def highest_score(self) -> int:
         """
@@ -110,28 +109,21 @@ class Hand(object):
         
     def max_non_bust_score(self) -> int:
         """
-        Returns the highest possible point count of a hand without it being bust.
-        If the hand is bust, this method will return 0
+        Returns the highest possible point count of a hand without it being bust.\n
+        Returns 0 if hand is bust
         """
-        # Check if hand is bust
-        if self.is_busted():
-            return 0
         # Check if lowest point count is over 21
         if self.lowest_score() > 21:
             return 0
         # Check for Aces in hand
         if self.amount_of_aces == 0:
             return self.lowest_score()
-        # Check for natural blackjack
-        if self.has_natural_blackjack():
-            return 21
-        # Check for regular blackjack
-        if self.highest_score() < 22:
+        # Check for blackjack
+        if self.highest_score() == 21:
             return self.highest_score()
-        
         # Calculate highest non-bust amount if hand has multiple Aces
         multi_ace_score = self.lowest_score()
-        if self.amount_of_aces() > 0 and multi_ace_score + 10 < 22:
+        if self.amount_of_aces() > 0 and multi_ace_score < 12:
             return multi_ace_score + 10
         return multi_ace_score 
     
@@ -139,10 +131,55 @@ class Hand(object):
         """
         Returns the number of aces in a hand
         """
-        ace_count = 0
-        for card in self.cards:
-            if card.rank == "Ace":
-                ace_count += 1
-        if ace_count > 1:
-            return True
-        return False
+        return sum(1 for card in self.cards if card.rank == "Ace")
+    
+    
+    # Getter for cards
+    def get_cards(self) -> List[Card]:
+        return self.cards
+
+    # Setter for cards
+    def set_cards(self, cards: List[Card]):
+        if not isinstance(cards, list) or not all(isinstance(card, Card) for card in cards):
+            raise ValueError("cards must be a list of Card instances")
+        self.cards = cards
+
+    # Getter for active
+    def is_active(self) -> bool:
+        return self.active
+
+    # Setter for active
+    def set_active(self, active: bool):
+        if not isinstance(active, bool):
+            raise ValueError("active must be a boolean value")
+        self.active = active
+
+    # Getter for doubled_down
+    def is_doubled_down(self) -> bool:
+        return self.doubled_down
+
+    # Setter for doubled_down
+    def set_doubled_down(self, doubled_down: bool):
+        if not isinstance(doubled_down, bool):
+            raise ValueError("doubled_down must be a boolean value")
+        self.doubled_down = doubled_down
+
+    # Getter for bust
+    def is_bust(self) -> bool:
+        return self.bust
+
+    # Setter for bust
+    def set_bust(self, bust: bool):
+        if not isinstance(bust, bool):
+            raise ValueError("bust must be a boolean value")
+        self.bust = bust
+    
+    # Getter for rejected_split_request
+    def get_rejected_split_request(self) -> bool:
+        return self.rejected_split_request
+
+    # Setter for rejected_split_request
+    def set_rejected_split_request(self, rejected_split_request: bool):
+        if not isinstance(rejected_split_request, bool):
+            raise ValueError("rejected_split_request must be a boolean value")
+        self.rejected_split_request = rejected_split_request

@@ -1,6 +1,5 @@
 from players.player import Player
 from dealer import Dealer
-import constants
 from typing import List
 from card import Card
 class Round(object):
@@ -10,7 +9,14 @@ class Round(object):
         self.participating_players: List[Player] = participating_players or []
         self.end_of_round = False
     
-        
+    def award_dealer_bust_wins(self, dealer: Dealer):
+        """
+        INCOMPLETE!
+        """
+        for player in self.get_participating_players():
+            for hand in player.get_hands():
+                if hand.is_busted():
+                    pass
     
     def send_bet_requests(self, all_players: List[Player]):
         """
@@ -58,8 +64,40 @@ class Round(object):
             - Send even money requests to players that have natural blackjack
             - Send insurance requests to players that don't have natural blackjack
         """
-        if dealer.hand[0].rank == "Ace" or dealer.hand[0].points == 10:
-            for player in self.participating_players:
-                # Send insurance requests
-                if player.request_insurance():
-                    dealer.insure_player(player=player)
+        for player in self.participating_players:
+            # Send insurance requests
+            if player.is_able_to_insure() and player.request_insurance():
+                dealer.insure_player(player=player)
+    
+    def conclude_insurance_round(self, dealer: Dealer):
+        """
+        This method should be called when dealer's face down-card is worth 10 points,
+        revealing a natural blackjack
+        
+        Actions:
+            - Dealer awards wins, losses and pushed to all players' hands 
+        """
+        for player in self.participating_players:
+            for hand in player.hands:
+                # Asses 
+                pass
+    
+    # Getter for participating_players
+    def get_participating_players(self) -> List[Player]:
+        return self.participating_players
+
+    # Setter for participating_players
+    def set_participating_players(self, participating_players: List[Player]):
+        if not isinstance(participating_players, list) or not all(isinstance(player, Player) for player in participating_players):
+            raise ValueError("participating_players must be a list of Player instances")
+        self.participating_players = participating_players
+
+    # Getter for end_of_round
+    def get_end_of_round(self) -> bool:
+        return self.end_of_round
+
+    # Setter for end_of_round
+    def set_end_of_round(self, end_of_round: bool):
+        if not isinstance(end_of_round, bool):
+            raise ValueError("end_of_round must be a boolean value")
+        self.end_of_round = end_of_round

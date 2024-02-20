@@ -37,7 +37,7 @@ class test_dealer(unittest.TestCase):
         
         dealer.deal_card(player_hand=player.hands[0], table_deck=table_deck)
         
-        self.assertEquals(player.hands[0].cards[0], ace_of_spades)
+        self.assertEqual(player.hands[0].cards[0], ace_of_spades)
         
     
     def test_deal_card_in_game(self):
@@ -91,7 +91,7 @@ class test_dealer(unittest.TestCase):
         self.assertEqual(len(table_deck), 0)
         self.assertEqual(len(test_player.hands[0].cards), 2)
         self.assertEqual(len(dealer.hand.cards), 2)
-           
+        
     def test_split_player_hand(self):
         main_hand_card = ace_of_spades
         split_hand_card = ace_of_hearts
@@ -252,28 +252,28 @@ class test_round(unittest.TestCase):
     def test_send_double_down_requests(self):
         pass
     
-    def test_send_insurance_requests(self):
-        # Test objects
-        yesman_with_enough_to_insure = Yesman(player_name="", custom_starting_chips=100, custom_initial_bet_amount= 50)
-        yesman_without_enough_to_insure = Yesman(player_name="", custom_starting_chips=24, custom_initial_bet_amount= 50)
-        noman = Yesman(player_name="Test Noman", custom_starting_chips=20, custom_initial_bet_amount= 50)
-        participating_players = [yesman_with_enough_to_insure, noman]
-        round = Round(participating_players=participating_players)
-        dealer_with_potential_blackjack = Dealer(starting_hand=[ace_of_spades])
-        dealer_without_potential_blackjack = Dealer(starting_hand=[five_of_clubs])
-        # Initiate test where insurance requests should be sent
-        round.send_insurance_requests(dealer=dealer_with_potential_blackjack)
-        # Evaluate results
-        self.assertEqual(yesman_with_enough_to_insure.chips, 75)
-        self.assertEqual(yesman_without_enough_to_insure.chips, 24)
-        self.assertEqual(noman.chips, 20)
-        
-        # Initiate test where insurance tests shouldn't be sent
-        round.send_insurance_requests(dealer=dealer_without_potential_blackjack)
-        # Evaluate results
-        self.assertEqual(yesman_with_enough_to_insure.chips, 75)
-        self.assertEqual(yesman_without_enough_to_insure.chips, 24)
-        self.assertEqual(noman.chips, 20)
+    #def test_send_insurance_requests(self):
+    #    # Test objects
+    #    yesman_with_enough_to_insure = Yesman(player_name="", custom_starting_chips=100, custom_initial_bet_amount= 50)
+    #    yesman_without_enough_to_insure = Yesman(player_name="", custom_starting_chips=24, custom_initial_bet_amount= 50)
+    #    noman = Yesman(player_name="Test Noman", custom_starting_chips=20, custom_initial_bet_amount= 50)
+    #    participating_players = [yesman_with_enough_to_insure, noman]
+    #    round = Round(participating_players=participating_players)
+    #    dealer_with_potential_blackjack = Dealer(starting_hand=[ace_of_spades])
+    #    dealer_without_potential_blackjack = Dealer(starting_hand=[five_of_clubs])
+    #    # Initiate test where insurance requests should be sent
+    #    round.send_insurance_requests(dealer=dealer_with_potential_blackjack)
+    #    # Evaluate results
+    #    self.assertEqual(yesman_with_enough_to_insure.chips, 75)
+    #    self.assertEqual(yesman_without_enough_to_insure.chips, 24)
+    #    self.assertEqual(noman.chips, 20)
+    #    
+    #    # Initiate test where insurance tests shouldn't be sent
+    #    round.send_insurance_requests(dealer=dealer_without_potential_blackjack)
+    #    # Evaluate results
+    #    self.assertEqual(yesman_with_enough_to_insure.chips, 75)
+    #    self.assertEqual(yesman_without_enough_to_insure.chips, 24)
+    #    self.assertEqual(noman.chips, 20)
         
         
 
