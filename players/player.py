@@ -1,4 +1,3 @@
-from card import Card
 from hand import Hand
 import constants
 
@@ -23,6 +22,12 @@ class Player(ABC):
         self.initial_bet_amount = 0 or custom_initial_bet_amount
         self.total_bet_amount: int = 0
         self.is_insured: bool = False
+    
+    def has_enough_to_bet(self) -> bool:
+        """
+        Returns True if player has enough chips to 
+        """
+        return self.get_chips() > constants.MIN_BET_AMOUNT
     
     def add_chips(self, amount: int):
         self.chips += amount
@@ -75,7 +80,9 @@ class Player(ABC):
         # Determine bet amount
         potential_bet_amount = self.get_initial_bet_amount()
         # Check if player has enough chips
-        return potential_bet_amount >= self.get_chips()
+        if potential_bet_amount > self.get_chips():
+            return False
+        return True 
     
     def insure(self):
         """
@@ -91,11 +98,16 @@ class Player(ABC):
         """
         self.chips += amount
     
-    def subtract_chips(self, amount: int):
+    
+    def total_round_bet_amount(self) -> int:
         """
-        Subtracts amount(int) from player chips
+        Returns the total number of chips that the player
+        has bet for the current round. 
+        
+        Takes into account:
+            - Insurance
+            - Double downs
         """
-        self.chips -= amount
     
     @abstractclassmethod
     def request_split_pair(self) -> bool:
@@ -123,7 +135,7 @@ class Player(ABC):
         """
     
     @abstractclassmethod
-    def request_double_down(self, hand: Hand):
+    def request_double_down(self, hand: Hand) -> bool:
         """
         Returns True if player decides to double down a hand
         """

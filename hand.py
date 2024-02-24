@@ -13,6 +13,7 @@ class Hand(object):
         self.doubled_down: bool = False
         self.bust: bool = False
         self.rejected_split_request: bool = False
+        self.amount_betted: int = 0
     
     def reject_split_request(self):
         """
@@ -39,9 +40,9 @@ class Hand(object):
         # Hand must have two cards in order to be split
         if len(self.cards) != 2:
             return False
-        if self.cards[0].rank != self.cards[1].rank:
+        if self.cards[0].rank != self.get_cards()[1].rank:
             return False
-        if self.rejected_split_request:
+        if self.get_rejected_split_request():
             return False
         return True
     
@@ -106,7 +107,8 @@ class Hand(object):
         Changes bust status of hand(self.bust) to True
         """
         self.bust = True
-        
+    
+    
     def max_non_bust_score(self) -> int:
         """
         Returns the highest possible point count of a hand without it being bust.\n
@@ -183,3 +185,23 @@ class Hand(object):
         if not isinstance(rejected_split_request, bool):
             raise ValueError("rejected_split_request must be a boolean value")
         self.rejected_split_request = rejected_split_request
+    
+    # Getter for amount_betted
+    def get_amount_betted(self) -> int:
+        return self.amount_betted
+    
+    # Setter for amount_betted
+    def set_amount_betted(self, amount_betted: int):
+        if not isinstance(amount_betted, int):
+            raise ValueError("amount_betted must be an int value")
+        self.amount_betted = amount_betted
+    
+    def current_bet_amount(self) -> int:
+        """
+        Returns the amount of chips that are betted for
+        a hand, adjusting when doubled down. 
+        """
+        current_bet_amount = self.get_amount_betted()
+        if self.is_doubled_down():
+            current_bet_amount *= 2
+        return current_bet_amount

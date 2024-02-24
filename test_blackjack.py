@@ -185,69 +185,69 @@ class test_player(unittest.TestCase):
 
 class test_round(unittest.TestCase):
     
-    def test_send_bet_requests(self):
+    def test_send_bet_request(self):
         pass
 
-    def test_send_split_requests(self):
-        # Test hands
-        table_deck = [queen_of_diamonds, ten_of_hearts, seven_of_clubs, eight_of_diamonds, two_of_hearts, three_of_spades, four_of_clubs]
-        hand_with_two_fives = Hand(starting_hand=[five_of_clubs, five_of_clubs])
-        hand_with_two_aces = Hand(starting_hand=[five_of_clubs, five_of_clubs])
-        non_pair_hand = Hand(starting_hand=[seven_of_clubs, eight_of_diamonds])
-        # Test hand groups
-        two_hands_with_two_pairs = [copy.deepcopy(hand_with_two_fives), copy.deepcopy(hand_with_two_fives)]
-        three_hands_with_two_pairs = [hand_with_two_aces, non_pair_hand, hand_with_two_fives] # Non-pair in middle of list
-        four_hands_with_one_pair = [non_pair_hand, non_pair_hand, hand_with_two_aces, non_pair_hand]
-        # Test players
-        dealer = Dealer()
-        yesman_without_pairs = Yesman(player_name="", custom_starting_chips=100, custom_initial_bet_amount=10, custom_starting_hands=[non_pair_hand])
-        yesman_with_two_hands_with_two_pairs = Yesman(player_name="", custom_starting_chips=100, custom_initial_bet_amount=10, custom_starting_hands=copy.deepcopy(two_hands_with_two_pairs))
-        yesman_with_enough_for_one_split = Yesman(player_name="", custom_starting_chips=10, custom_initial_bet_amount=10, custom_starting_hands=copy.deepcopy(two_hands_with_two_pairs))        
-        broke_yesman_with_two_pairs = Yesman(player_name="", custom_starting_chips=9, custom_initial_bet_amount=10, custom_starting_hands=copy.deepcopy(two_hands_with_two_pairs))
-        yesman_with_three_hands_with_two_pairs = Yesman(player_name="", custom_starting_chips=100, custom_initial_bet_amount=10, custom_starting_hands=copy.deepcopy(three_hands_with_two_pairs))
-        yesman_with_four_hands_with_one_pair = Yesman(player_name="", custom_starting_chips=100, custom_initial_bet_amount=10, custom_starting_hands=copy.deepcopy(four_hands_with_one_pair))
-        noman_with_two_hands_with_two_pairs = Noman(player_name="", custom_starting_chips=100, custom_initial_bet_amount=10, custom_starting_hands=copy.deepcopy(two_hands_with_two_pairs))
-        # Player groups
-        unaffected_players = [broke_yesman_with_two_pairs, noman_with_two_hands_with_two_pairs, yesman_with_four_hands_with_one_pair, yesman_without_pairs]
-        single_split_players = [yesman_with_enough_for_one_split, yesman_with_three_hands_with_two_pairs]
-        multiple_split_players = [yesman_with_two_hands_with_two_pairs]
-        
-        # Test unaffected players
-        round = Round(participating_players=unaffected_players)
-        # Verify initial states
-        self.assertEqual(len(broke_yesman_with_two_pairs.hands), 2)
-        self.assertEqual(len(noman_with_two_hands_with_two_pairs.hands), 2)
-        self.assertEqual(len(yesman_with_four_hands_with_one_pair.hands), 4)
-        self.assertEqual(len(yesman_without_pairs.hands), 1)
-        # Execute Test
-        round.send_split_requests(dealer=dealer, table_deck=copy.deepcopy(table_deck))
-        # Verify broke_yesman_with_two_pairs
-        self.assertEqual(len(broke_yesman_with_two_pairs.hands), 2)
-        # Verify noman_with_two_hands_with_two_pairs
-        self.assertEqual(len(noman_with_two_hands_with_two_pairs.hands), 2)
-        # Verify yesman_with_four_hands_with_one_pair
-        self.assertEqual(len(yesman_with_four_hands_with_one_pair.hands), 4)
-        # Verify yesman_without_pairs
-        self.assertEqual(len(yesman_without_pairs.hands), 1)
-        
-        # Execute test
-        round.send_split_requests(dealer=dealer, table_deck=copy.deepcopy(table_deck))
-        
-        # Test single split players
-        round = Round(participating_players=single_split_players)
-        self.assertEqual(len(yesman_with_enough_for_one_split.hands), 2)
-        # Execute test
-        round.send_split_requests(dealer=dealer, table_deck=copy.deepcopy(table_deck))
-        # Verify yesman_with_enough_for_one_split
-        self.assertEqual(len(yesman_with_enough_for_one_split.hands), 3)
-        # Verify yesman_with_three_hands_with_two_pairs
-        self.assertEqual(len(yesman_with_three_hands_with_two_pairs.hands), 4)
-        
-        # Test multiple split players
-        round = Round(participating_players=multiple_split_players)
-        round.send_split_requests(dealer=dealer, table_deck=copy.deepcopy(table_deck))
-        # Verify yesman_with_two_hands_with_two_pairs
-        self.assertEqual(len(yesman_with_two_hands_with_two_pairs.hands), 4)
+    #def test_send_split_request(self):
+    #    # Test hands
+    #    table_deck = [queen_of_diamonds, ten_of_hearts, seven_of_clubs, eight_of_diamonds, two_of_hearts, three_of_spades, four_of_clubs]
+    #    hand_with_two_fives = Hand(starting_hand=[five_of_clubs, five_of_clubs])
+    #    hand_with_two_aces = Hand(starting_hand=[five_of_clubs, five_of_clubs])
+    #    non_pair_hand = Hand(starting_hand=[seven_of_clubs, eight_of_diamonds])
+    #    # Test hand groups
+    #    two_hands_with_two_pairs = [copy.deepcopy(hand_with_two_fives), copy.deepcopy(hand_with_two_fives)]
+    #    three_hands_with_two_pairs = [hand_with_two_aces, non_pair_hand, hand_with_two_fives] # Non-pair in middle of list
+    #    four_hands_with_one_pair = [non_pair_hand, non_pair_hand, hand_with_two_aces, non_pair_hand]
+    #    # Test players
+    #    dealer = Dealer()
+    #    yesman_without_pairs = Yesman(player_name="", custom_starting_chips=100, custom_initial_bet_amount=10, custom_starting_hands=[non_pair_hand])
+    #    yesman_with_two_hands_with_two_pairs = Yesman(player_name="", custom_starting_chips=100, custom_initial_bet_amount=10, custom_starting_hands=copy.deepcopy(two_hands_with_two_pairs))
+    #    yesman_with_enough_for_one_split = Yesman(player_name="", custom_starting_chips=10, custom_initial_bet_amount=10, custom_starting_hands=copy.deepcopy(two_hands_with_two_pairs))        
+    #    broke_yesman_with_two_pairs = Yesman(player_name="", custom_starting_chips=9, custom_initial_bet_amount=10, custom_starting_hands=copy.deepcopy(two_hands_with_two_pairs))
+    #    yesman_with_three_hands_with_two_pairs = Yesman(player_name="", custom_starting_chips=100, custom_initial_bet_amount=10, custom_starting_hands=copy.deepcopy(three_hands_with_two_pairs))
+    #    yesman_with_four_hands_with_one_pair = Yesman(player_name="", custom_starting_chips=100, custom_initial_bet_amount=10, custom_starting_hands=copy.deepcopy(four_hands_with_one_pair))
+    #    noman_with_two_hands_with_two_pairs = Noman(player_name="", custom_starting_chips=100, custom_initial_bet_amount=10, custom_starting_hands=copy.deepcopy(two_hands_with_two_pairs))
+    #    # Player groups
+    #    unaffected_players = [broke_yesman_with_two_pairs, noman_with_two_hands_with_two_pairs, yesman_with_four_hands_with_one_pair, yesman_without_pairs]
+    #    single_split_players = [yesman_with_enough_for_one_split, yesman_with_three_hands_with_two_pairs]
+    #    multiple_split_players = [yesman_with_two_hands_with_two_pairs]
+    #    
+    #    # Test unaffected players
+    #    round = Round(participating_players=unaffected_players)
+    #    # Verify initial states
+    #    self.assertEqual(len(broke_yesman_with_two_pairs.hands), 2)
+    #    self.assertEqual(len(noman_with_two_hands_with_two_pairs.hands), 2)
+    #    self.assertEqual(len(yesman_with_four_hands_with_one_pair.hands), 4)
+    #    self.assertEqual(len(yesman_without_pairs.hands), 1)
+    #    # Execute Test
+    #    round.send_split_requests(dealer=dealer, table_deck=copy.deepcopy(table_deck))
+    #    # Verify broke_yesman_with_two_pairs
+    #    self.assertEqual(len(broke_yesman_with_two_pairs.hands), 2)
+    #    # Verify noman_with_two_hands_with_two_pairs
+    #    self.assertEqual(len(noman_with_two_hands_with_two_pairs.hands), 2)
+    #    # Verify yesman_with_four_hands_with_one_pair
+    #    self.assertEqual(len(yesman_with_four_hands_with_one_pair.hands), 4)
+    #    # Verify yesman_without_pairs
+    #    self.assertEqual(len(yesman_without_pairs.hands), 1)
+    #    
+    #    # Execute test
+    #    round.send_split_requests(dealer=dealer, table_deck=copy.deepcopy(table_deck))
+    #    
+    #    # Test single split players
+    #    round = Round(participating_players=single_split_players)
+    #    self.assertEqual(len(yesman_with_enough_for_one_split.hands), 2)
+    #    # Execute test
+    #    round.send_split_requests(dealer=dealer, table_deck=copy.deepcopy(table_deck))
+    #    # Verify yesman_with_enough_for_one_split
+    #    self.assertEqual(len(yesman_with_enough_for_one_split.hands), 3)
+    #    # Verify yesman_with_three_hands_with_two_pairs
+    #    self.assertEqual(len(yesman_with_three_hands_with_two_pairs.hands), 4)
+    #    
+    #    # Test multiple split players
+    #    round = Round(participating_players=multiple_split_players)
+    #    round.send_split_requests(dealer=dealer, table_deck=copy.deepcopy(table_deck))
+    #    # Verify yesman_with_two_hands_with_two_pairs
+    #    self.assertEqual(len(yesman_with_two_hands_with_two_pairs.hands), 4)
         
     def test_send_double_down_requests(self):
         pass

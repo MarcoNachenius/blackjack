@@ -1,7 +1,10 @@
 from players.player import Player
 from dealer import Dealer
+from hand import Hand
 from typing import List
 from card import Card
+import constants
+import math
 class Round(object):
     """
     """
@@ -11,14 +14,15 @@ class Round(object):
     
     def award_dealer_bust_wins(self, dealer: Dealer):
         """
-        INCOMPLETE!
+        docstring
         """
+        print("DEALER BUST")
         for player in self.get_participating_players():
             for hand in player.get_hands():
-                if hand.is_busted():
-                    pass
+                if hand.max_non_bust_score() != 0:
+                    dealer.award_win(hand=hand, player=player)
     
-    def send_bet_requests(self, all_players: List[Player]):
+    def send_bet_requests(self, all_players: List[Player], dealer: Dealer):
         """
         Populates self.participating_players list.
         If  player is added to list, it means that initial bet has\n
@@ -28,33 +32,74 @@ class Round(object):
         - Player has more than 0 chips\n
         """
         for player in all_players:
-            if player.request_bet_amount > 0:
-                self.participating_players.append(player)
+            print(f'Taking bet from {player.get_player_name()}')
+            # Check player balance
+            if not player.has_enough_to_bet():
+                print(f"Bet request rejected: Insufficient funds")
+                continue
+            # Get bet amount from player
+            bet_amount = player.request_bet_amount()
+            if bet_amount < constants.MIN_BET_AMOUNT:
+                print(f"Bet request rejected: Falls below minimum bet amount")
+                continue
+            player.hands[0].set_active(True)
+            player.set_initial_bet_amount(bet_amount)
+            dealer.accept_player_bet(bet_amount=bet_amount, hand=player.get_hands()[0], player=player)
+            self.participating_players.append(player)
+
+    def send_hit_request(self, dealer: Dealer, table_deck: List[Card], player: Player, hand: Hand):
+        if not hand.is_active():
+            return
+        while hand.is_busted() == False and hand.is_active():
+            if player.request_hit(hand=hand):
+                dealer.hit_player_hand(hand=hand, table_deck=table_deck)
+            else:
+                hand.set_active(False)
+        return
     
-    def send_split_requests(self, dealer: Dealer, table_deck: List[Card]):
+    def send_split_request(self, dealer: Dealer, table_deck: List[Card], player: Player, hand: Hand):
         """
-        Requests are only sent to player if:\n
+        Sends split request for hand to player if:\n
         - Player has pair\n
         - Player has less than max allowed hands\n
         - Player has enough chips to split hand\n
         """
-        for player in self.participating_players:
-            
-            # Dealer only sends split request if hand has pair and player has less than max
-            # allowed number of hands
-            for hand in player.hands:
-                if hand.rejected_split_request:
-                    continue
-                while hand.is_splittable() and player.is_able_to_split() and not hand.rejected_split_request:
-                    # Send split request to player
-                    if player.request_split_pair():
-                        dealer.split_player_hand(split_hand=hand, player=player, table_deck=table_deck)
-                    else: 
-                        hand.reject_split_request()
+        while hand.is_splittable() and player.is_able_to_split() and not hand.get_rejected_split_request():
+            # Send split request to player
+            if player.request_split_pair(hand=hand):
+                dealer.split_player_hand(split_hand=hand, player=player, table_deck=table_deck)
+            else: 
+                hand.set_rejected_split_request(True)
+        return
                 
-    def send_double_down_requests(self):
-        pass
+    def send_double_down_request(self, dealer: Dealer, table_deck: List[Card], player: Player, hand: Hand):
+        if not player.is_able_to_double_down():
+            return
+        if player.request_double_down(hand=hand):
+            dealer.double_down_player_hand(player_hand=hand, player=player, table_deck=table_deck)
+        return
     
+    def award_wins_comparatively(self, dealer: Dealer):
+        for player in self.get_participating_players():
+            for hand in player.get_hands():
+                # Check for natural blackjack
+                if hand.has_natural_blackjack():
+                    dealer.award_natural_blackjack_win(hand=hand, player=player)
+                # Check for bust
+                if hand.max_non_bust_score() == 0:
+                    print("BUST")
+                    continue
+                # Check for same score as dealer
+                if hand.max_non_bust_score() == dealer.hand.max_non_bust_score():
+                    dealer.award_push(hand=hand, player=player)
+                    continue
+                # Check for higher score than dealer
+                if hand.max_non_bust_score() > dealer.hand.max_non_bust_score():
+                    dealer.award_win(hand=hand, player=player)
+                    continue
+                print("LOSS")
+                print(f'{player.get_player_name()} has lost {hand.current_bet_amount()} chips')
+        return
     
     def send_insurance_requests(self, dealer: Dealer):
         """
@@ -80,7 +125,13 @@ class Round(object):
         for player in self.participating_players:
             for hand in player.hands:
                 # Asses 
-                pass
+                if hand.has_natural_blackjack():
+                    if player.get_is_insured():
+                        player.add_chips(math.floor(player.get_initial_bet_amount() * 0.5))
+                    dealer.award_push(hand=hand, player=player)
+                    continue
+        return
+                    
     
     # Getter for participating_players
     def get_participating_players(self) -> List[Player]:

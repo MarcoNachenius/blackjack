@@ -1,6 +1,8 @@
 from card import Card
 from hand import Hand
 from players.player import Player
+from hand import Hand
+import constants
 
 from typing import List
 import random
@@ -18,6 +20,21 @@ class Dealer(object):
         """
         self.hand: Hand = starting_hand or Hand()
     
+    def get_hand(self) -> Hand:
+        return self.hand
+    
+    def set_hand(self, hand: Hand):
+        self.hand = hand
+        return
+    
+    def accept_player_bet(self, bet_amount: int, hand: Hand, player: Player):
+        """
+        Subtracts bet amount from player balance and adds it to 
+        bet amount for hand
+        """
+        player.subtract_chips(bet_amount)
+        hand.set_amount_betted(bet_amount)
+        hand.set_active(True)
     
     def deal_card(self, player_hand: Hand, table_deck: List[Card], hide_card = False):
         """
@@ -48,7 +65,7 @@ class Dealer(object):
         """
         # Skip method if player does not have a pair
         if not split_hand.is_splittable():
-            split_hand.reject_split_request()
+            split_hand.set_rejected_split_request(True)
             return
         # Create new hand
         # First card of new hand is second card of split_hand
@@ -59,7 +76,9 @@ class Dealer(object):
         self.deal_card(player_hand=split_hand, table_deck=table_deck)
         self.deal_card(player_hand=new_hand, table_deck=table_deck)
         # Subtract bet amount from player
-        player.subtract_chips(amount=player.initial_bet_amount)
+        player.subtract_chips(amount=player.get_initial_bet_amount())
+        new_hand.set_amount_betted(player.get_initial_bet_amount())
+        return
     
     def award_natural_blackjack_win( self, hand: Hand, player: Player):
         """
@@ -69,16 +88,65 @@ class Dealer(object):
         Assumes player has natural blackjack\n
         If player is awarded an amount of chips that is not a whole number, the amount will be floored(rounded down). 
         """
-        player.add_chips(math.floor(player.initial_bet_amount * 1.5) + player.initial_bet_amount)
+        print("NATURAL BLACKJACK WIN")
+        print(f'{player.get_player_name()} has won {int(math.floor(hand.get_amount_betted() * 1.5))} chips')
+        player.add_chips(math.floor(hand.get_amount_betted() * 1.5) + hand.get_amount_betted())
         hand.deactivate()
+    
+    
+    def award_push(self, hand: Hand, player: Player):
+        """
+        Adds bet amount to 
+        """
+        player.add_chips(hand.current_bet_amount())
+        print("PUSH")
+        print(f'{player.get_player_name()} has been awarded a push')
+        return
+    
+    def needs_to_hit_again(self, participating_players: List[Player]) -> bool:
+        """
+        Returns False if the dealer is already has a hand that will beat all
+        of the other hans on the table
+        """
+        # Check for dealer hand bust
+        if self.hand.max_non_bust_score() == 0:
+            return False
+        # Check for dealer hand hit limit
+        if self.hand.max_non_bust_score() >= constants.DEALER_HIT_LIMIT:
+            return False
+        # Verify if all hands are bust
+        all_hands_bust = True
+        # Compare dealer hand to every other hand in play
+        for player in participating_players:
+            for hand in player.hands:
+                # Skip bust hands
+                if hand.max_non_bust_score() == 0:
+                    continue
+                # Check if non-bust hand has been found
+                if all_hands_bust and hand.max_non_bust_score() != 0:
+                    all_hands_bust = False
+                # Check if player hand has higher score than dealer hand
+                if hand.max_non_bust_score() > self.hand.max_non_bust_score():
+                    return True
+                    
+        return all_hands_bust
+    
+    def award_win(self, hand: Hand, player: Player):
+        """
+        Adds twice the bet amount to player chips
+        """
+        print("WIN")
+        print(f'{player.get_player_name()} has won {hand.current_bet_amount()} chips')
+        player.add_chips(hand.current_bet_amount() * 2)
     
     def insure_player(self, player: Player):
         """
         Requests if a player wants to insure hand.
         If player accepts request, insurance status is turned on (player.is_insured=True)
         """
-        if player.is_able_to_insure() and player.request_insurance():
-            player.insure()
+        player.set_is_insured(True)
+        player.subtract_chips(math.ceil(player.get_initial_bet_amount()*0.5))
+        return
     
     def hit_player_hand(self, hand: Hand, table_deck: List[Card]):
         """
@@ -100,10 +168,10 @@ class Dealer(object):
         todo:
         - Check if hand is in player_hand
         """
-        player_hand.doubled_down = True
-        player_hand.deactivate()
+        player_hand.set_doubled_down(True)
+        player_hand.set_active(False)
         self.deal_card(player_hand=player_hand, table_deck=table_deck)
-        player.subtract_chips(player.initial_bet_amount)
+        player.subtract_chips(player.get_initial_bet_amount())
         
     
     def deal_initial_cards(self, table_deck: List[Card], participating_players: List[Player]):

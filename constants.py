@@ -1,6 +1,7 @@
 from typing import List
 from card import Card
 
+# String constants
 SUIT_TYPES = ["Spades", "Hearts", "Diamonds", "Clubs"]
 CARD_NAMES = [
     "Ace",
@@ -16,7 +17,10 @@ CARD_NAMES = [
     "Jack",
     "King",
     "Queen"]
+
+# Shoe variable
 DECKS_IN_PLAY = 5
+PENETRATION_POINT_PERCENTAGE = 60
 STARTING_CHIPS = 1000
 
 # Insurance
@@ -27,7 +31,9 @@ INSURANCE_PAYBACK_PERCENTAGE: 200
 FIST_BLACKJACK_PAYBACK_PERCENTAGE = 150
 MAX_HAND_LIMIT = 4
 
+MIN_BET_AMOUNT = 2
 
+DEALER_HIT_LIMIT = 17
 class Deck(object):
     """
     Deck doc string

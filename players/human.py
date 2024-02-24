@@ -2,6 +2,7 @@ from players.player import Player
 from card import Card
 from hand import Hand
 import constants
+from print_statements import *
 
 from typing import List
 
@@ -10,44 +11,44 @@ class Human(Player):
     def __init__(self, player_name: str, custom_starting_hands: List[Hand] = None, custom_starting_chips: int = None, custom_initial_bet_amount: int = None):
         super().__init__(player_name=player_name ,custom_starting_hands=custom_starting_hands , custom_starting_chips=custom_starting_chips, custom_initial_bet_amount=custom_initial_bet_amount)
     
-    def request_split_pair(self) -> bool:
-        response = input("Split pair? [y/n]")
+    def request_split_pair(self, hand: Hand) -> bool:
+        HandStatements.hand_cards_and_points(hand=hand)
+        response = input("Split pair? [y/n]\n")
         if response == "y":
             return True
     
     def request_round_participation(self) -> bool:
         # Exceptions
         # Does player have enough chips to bet?
-        participation_request = input("Would you like to play the next round? [y/n]")
+        participation_request = input("Would you like to play the next round? [y/n]\n")
         if participation_request == "y":
             return True
         else:
             return False
     
     def request_bet_amount(self) -> int:
-        # Exceptions
-        # Is player placing a valid bet? (Not enough or too much)
-        total_bet_amount = int(input("Enter the amount of chips you would like to bet"))
+        print(f'Current balance: {self.get_chips()}')
+        total_bet_amount = int(input("Enter the amount of chips you would like to bet:\n"))
         return total_bet_amount
     
     def request_hit(self, hand: Hand) -> bool:
-        print("Hand:")
-        for card in hand.cards:
-            print(card.full_name())
-        hit_request = input("Would you like to add a card to hand? [y/n]")
+        HandStatements.hand_cards_and_points(hand=hand)
+        hit_request = input("Would you like to add a card to hand? [y/n]\n")
         if hit_request == "y":
             return True
         return False
     
-    def request_double_down(self):
-        double_down = input("Would you like to double down your hand? [y/n]")
+    def request_double_down(self, hand: Hand):
+        HandStatements.hand_cards_and_points(hand=hand)
+        double_down = input("Would you like to double down your hand? [y/n]\n")
         if double_down == "y":
             return True
         return False
     
     
     def request_insurance(self) -> bool:
-        insurance_request = input("Would you like to buy insurance? [y/n]")
+        HandStatements.hand_cards_and_points(hand=self.get_hands()[0])
+        insurance_request = input("Would you like to buy insurance? [y/n]\n")
         if insurance_request == "y":
             return True
         return False
