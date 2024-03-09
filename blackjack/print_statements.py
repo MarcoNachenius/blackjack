@@ -1,8 +1,9 @@
-from hand import Hand
-from dealer import Dealer
+from blackjack.hand import Hand
+from blackjack.dealer import Dealer
+from blackjack.players.player import Player
+from blackjack.print_statements import *
+
 from typing import List
-from players.player import Player
-from print_statements import *
 
 class HandStatements(object):
     """

@@ -1,7 +1,7 @@
-from game import Game
-from players.human import Human
-from players.bots.yesman import Yesman
-from constants import *
+from blackjack.game import Game
+from blackjack.players.human import Human
+from blackjack.players.bots.yesman import Yesman
+from blackjack.constants import *
 
 if __name__ == "__main__":
     all_players = [Human(player_name="Foo")]

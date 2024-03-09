@@ -1,16 +1,16 @@
 import unittest
 import copy
 # Project files
-from card import Card
-from constants import Deck
-from dealer import Dealer
-from game import Game
-from hand import Hand
-from round import Round
+from blackjack.card import Card
+from blackjack.constants import Deck
+from blackjack.dealer import Dealer
+from blackjack.game import Game
+from blackjack.hand import Hand
+from blackjack.round import Round
 # Player objects
-from players.human import Human
-from players.bots.yesman import Yesman
-from players.bots.noman import Noman
+from blackjack.players.human import Human
+from blackjack.players.bots.yesman import Yesman
+from blackjack.players.bots.noman import Noman
 
 # Sample Cards
 ace_of_spades = Card(rank="Ace", suit="Spades", points=1)

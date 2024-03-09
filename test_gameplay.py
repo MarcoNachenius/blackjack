@@ -1,7 +1,7 @@
 import unittest
-from card import Card
-from players.bots.yesman import Yesman
-from dealer import Dealer
+from blackjack.card import Card
+from blackjack.players.bots.yesman import Yesman
+from blackjack.dealer import Dealer
 
 # Sample Cards
 ace_of_spades = Card(rank="Ace", suit="Spades", points=1)

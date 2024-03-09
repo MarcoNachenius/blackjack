@@ -1,6 +1,8 @@
 import sqlite3
+from pathlib import Path
 
-conn = sqlite3.Connection('blackjack.db')
+BASE_DIR = Path(__file__).parent.parent
+conn = sqlite3.Connection(BASE_DIR / 'blackjack.db')
 cur = conn.cursor()
 
 def create_database():

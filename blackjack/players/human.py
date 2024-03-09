@@ -1,8 +1,7 @@
-from players.player import Player
-from card import Card
-from hand import Hand
-import constants
-from print_statements import *
+from blackjack.players.player import Player
+from blackjack.card import Card
+from blackjack.hand import Hand
+from blackjack.print_statements import *
 
 from typing import List
 

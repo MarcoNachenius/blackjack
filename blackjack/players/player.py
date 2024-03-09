@@ -1,5 +1,5 @@
-from hand import Hand
-import constants
+from blackjack.hand import Hand
+from blackjack import constants
 
 from typing import List
 from abc import ABC, abstractclassmethod

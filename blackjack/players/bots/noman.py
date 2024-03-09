@@ -1,6 +1,6 @@
-from ..player import Player
-from hand import Hand
-from card import Card
+from blackjack.players.player import Player
+from blackjack.hand import Hand
+from blackjack.card import Card
 
 from typing import List
 
