@@ -17,11 +17,12 @@ class Player(ABC):
     def __init__(self, player_name: str, custom_starting_hands: List[Hand] = None, custom_starting_chips: int = 0, custom_initial_bet_amount: int = 0):
         self.player_name = player_name # Required field
         self.hands: List[Hand] = custom_starting_hands or [Hand()]
+        self.hand_combo_id: str = ""
         self.chips: int = custom_starting_chips or constants.STARTING_CHIPS
-        # Round properties
         self.initial_bet_amount = 0 or custom_initial_bet_amount
         self.total_bet_amount: int = 0
         self.is_insured: bool = False
+        self.total_winnings: int = 0
     
     def has_enough_to_bet(self) -> bool:
         """
@@ -30,15 +31,15 @@ class Player(ABC):
         return self.get_chips() > constants.MIN_BET_AMOUNT
     
     def add_chips(self, amount: int):
-        self.chips += amount
+        self.set_chips(self.get_chips() + amount)
     
     def subtract_chips(self, amount: int):
-        self.chips -= amount
+        self.set_chips(self.get_chips() - amount)
     
     def current_bet_amount(self) -> int:
         bet_amount = self.get_initial_bet_amount()
         if self.get_is_insured():
-            bet_amount *= 2
+            bet_amount = math.ceil(bet_amount * 1.5)
         return bet_amount
     
     def has_active_hands(self) -> bool:
@@ -161,7 +162,17 @@ class Player(ABC):
         if not isinstance(player_name, str):
             raise ValueError("player_name must be a string")
         self.player_name = player_name
+    
+    # Getter for hand_combo_id
+    def get_hand_combo_id(self) -> str:
+        return self.hand_combo_id
 
+    # Setter for hand_combo_id with type verification
+    def set_hand_combo_id(self, hand_combo_id: str):
+        if not isinstance(hand_combo_id, str):
+            raise ValueError("hand_combo_id must be a string")
+        self.hand_combo_id = hand_combo_id
+    
     # Getter for hands
     def get_hands(self) -> List[Hand]:
         return self.hands
@@ -211,3 +222,23 @@ class Player(ABC):
         if not isinstance(is_insured, bool):
             raise ValueError("is_insured must be a boolean")
         self.is_insured = is_insured
+
+    # Getter for total_winnings
+    def get_total_winnings(self) -> int:
+        return self.total_winnings
+
+    # Setter for total_winnings with type verification
+    def set_total_winnings(self, total_winnings: int):
+        if not isinstance(total_winnings, int):
+            raise ValueError("total_winnings must be an integer")
+        self.total_winnings = total_winnings
+        
+    def add_to_total_winnings(self, amount: int):
+        if not isinstance(amount, int):
+            raise ValueError("amount must be an integer")
+        self.set_total_winnings(self.get_total_winnings() + amount)
+    
+    def subtract_from_total_winnings(self, amount: int):
+        if not isinstance(amount, int):
+            raise ValueError("amount must be an integer")
+        self.set_total_winnings(self.get_total_winnings() - amount)

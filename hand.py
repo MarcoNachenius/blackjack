@@ -6,6 +6,7 @@ class Hand(object):
     """Only first_card or starting_hand may be used as """
     def __init__(self, first_card: Card = None, starting_hand: List[Card] = None):
         """first_card and starting_hand may not be given values simultaneously"""
+        self.hand_id: str = ""
         self.cards: List[Card] = starting_hand or []
         if first_card:
             self.cards.append(first_card)
@@ -14,33 +15,35 @@ class Hand(object):
         self.bust: bool = False
         self.rejected_split_request: bool = False
         self.amount_betted: int = 0
+        self.final_outcome: str = ""
     
     def reject_split_request(self):
         """
         Enables status of hand to indicate that split request was received and rejected
         """
-        self.rejected_split_request = True
+        self.set_rejected_split_request(True)
     
-    def add_card(self, card: Card):
-        """
-        Adds card to hand(self.cards)
-        """
-        self.cards.append(card)
-        
+    def add_card (self, card: Card):
+        new_card_list = self.get_cards()
+        new_card_list.append(card)
+        self.set_cards(new_card_list)
+        return
+       
     def deactivate(self):
         """
         Changes active status(self.active) of hand
         """
         self.active = False
+        return
     
     def is_splittable(self) -> bool:
         """
         Returns True if first two cards of player hand are a pair
         """
         # Hand must have two cards in order to be split
-        if len(self.cards) != 2:
+        if len(self.get_cards()) != 2:
             return False
-        if self.cards[0].rank != self.get_cards()[1].rank:
+        if self.get_cards()[0].rank != self.get_cards()[1].rank:
             return False
         if self.get_rejected_split_request():
             return False
@@ -53,7 +56,7 @@ class Hand(object):
         ["Ace of Spades", "Queen of Hearts"]
         """
         full_names_list = []
-        for card in self.cards:
+        for card in self.get_cards():
             full_names_list.append(card.full_name())
         return full_names_list
         
@@ -64,19 +67,18 @@ class Hand(object):
         Returns True if one card is an Ace and the other is a 10-point card
         """
         # Check if hand is appropriate size
-        if len(self.cards) != 2:
+        if len(self.get_cards()) != 2:
             return False
         # Check for presence of 10 point card and ace
         found_ace_card = False
         found_ten_point_card = False
-        for i in range(2):
-            # Check for aces
-            if self.cards[i].rank == "Ace":
-                found_ace_card = True
-            # Check for 10-point card
-            if self.cards[i].points == 10:
-                found_ten_point_card = True
-        return bool(found_ace_card and found_ten_point_card)
+        # Check for aces
+        if self.get_cards()[0].rank == "Ace":
+            found_ace_card = True
+        # Check for 10-point card
+        if self.get_cards()[1].points == 10:
+            found_ten_point_card = True
+        return found_ace_card and found_ten_point_card
     
     def is_busted(self) -> bool:
         """
@@ -205,3 +207,23 @@ class Hand(object):
         if self.is_doubled_down():
             current_bet_amount *= 2
         return current_bet_amount
+    
+    # Getter for final_outcome
+    def get_final_outcome(self) -> str:
+        return self.final_outcome
+
+    # Setter for final_outcome
+    def set_final_outcome(self, final_outcome: str):
+        if not isinstance(final_outcome, str):
+            raise ValueError("final_outcome must be a string")
+        self.final_outcome = final_outcome
+    
+    # Getter for hand_id
+    def get_hand_id(self) -> str:
+        return self.hand_id
+
+    # Setter for hand_id
+    def set_hand_id(self, hand_id: str):
+        if not isinstance(hand_id, str):
+            raise ValueError("hand_id must be a string")
+        self.hand_id = hand_id

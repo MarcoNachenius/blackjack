@@ -124,6 +124,7 @@ class Game(object):
         if self.dealer.hand.has_natural_blackjack():
             print("DEALER NATURAL BLACKJACK FOUND")
             self.current_round.conclude_insurance_round(dealer=self.dealer)
+            self.current_round.clear_round_values(dealer=self.dealer)
             return
         
         # Step 4 - Player Actions
@@ -142,16 +143,15 @@ class Game(object):
         self.dealer.hand.cards[1].make_visible()
         # 6.2 - The dealer hits until they have a total of 17 or higher.
         while self.dealer.needs_to_hit_again(participating_players=self.current_round.participating_players):
-            self.dealer.deal_card(player_hand=self.dealer.hand, table_deck=self.table_deck)
+            self.dealer.deal_card(player_hand=self.dealer.get_hand(), table_deck=self.table_deck)
         
-        # Check for dealer hand bust
-        if self.dealer.hand.max_non_bust_score() == 0:
-            self.dealer.hand.set_bust(True)
-            self.current_round.award_dealer_bust_wins(dealer=self.dealer)
         
         print("AWARDING WINS")
         self.current_round.award_wins_comparatively(dealer=self.dealer)
         RoundStatements.round_completion_results(dealer_hand=self.dealer.get_hand(), participating_players=self.current_round.get_participating_players())
+        
+        # Clear round values
+        self.current_round.clear_round_values(dealer=self.dealer)
         return
     
     def add_player(self, player: Player):

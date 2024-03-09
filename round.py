@@ -12,11 +12,26 @@ class Round(object):
         self.participating_players: List[Player] = participating_players or []
         self.end_of_round = False
     
+    def clear_round_values(self, dealer: Dealer):
+        """
+        Clears all values for players and the dealer that have to do with the current round.
+        """
+        # Clear dealer hand
+        dealer.set_hand(Hand())
+        # Clear player values
+        for player in self.get_participating_players():
+            player.set_initial_bet_amount(0)
+            player.set_is_insured(False)
+            player.set_total_bet_amount(0)
+            player.set_hands([Hand()])
+            player.set_total_winnings(0)
+        return
+            
     def award_dealer_bust_wins(self, dealer: Dealer):
         """
         docstring
         """
-        print("DEALER BUST")
+        print("DEALER BUST\n")
         for player in self.get_participating_players():
             for hand in player.get_hands():
                 if hand.max_non_bust_score() != 0:
@@ -35,17 +50,22 @@ class Round(object):
             print(f'Taking bet from {player.get_player_name()}')
             # Check player balance
             if not player.has_enough_to_bet():
-                print(f"Bet request rejected: Insufficient funds")
+                print(f"Bet request rejected: Insufficient funds\n")
                 continue
             # Get bet amount from player
             bet_amount = player.request_bet_amount()
             if bet_amount < constants.MIN_BET_AMOUNT:
-                print(f"Bet request rejected: Falls below minimum bet amount")
+                print(f"Bet request rejected: Falls below minimum bet amount\n")
                 continue
+            if bet_amount > player.get_chips():
+                print(f"Bet request rejected: Insufficient funds\n")
+                continue
+            # Assumes player has placed valid bet amount
             player.hands[0].set_active(True)
             player.set_initial_bet_amount(bet_amount)
             dealer.accept_player_bet(bet_amount=bet_amount, hand=player.get_hands()[0], player=player)
             self.participating_players.append(player)
+            player.subtract_from_total_winnings(bet_amount)
 
     def send_hit_request(self, dealer: Dealer, table_deck: List[Card], player: Player, hand: Hand):
         if not hand.is_active():
@@ -85,9 +105,11 @@ class Round(object):
                 # Check for natural blackjack
                 if hand.has_natural_blackjack():
                     dealer.award_natural_blackjack_win(hand=hand, player=player)
+                    continue
                 # Check for bust
                 if hand.max_non_bust_score() == 0:
-                    print("BUST")
+                    print("BUST LOSS\n")
+                    print(f'{player.get_player_name()} has lost {hand.current_bet_amount()} chips')
                     continue
                 # Check for same score as dealer
                 if hand.max_non_bust_score() == dealer.hand.max_non_bust_score():
@@ -97,8 +119,9 @@ class Round(object):
                 if hand.max_non_bust_score() > dealer.hand.max_non_bust_score():
                     dealer.award_win(hand=hand, player=player)
                     continue
-                print("LOSS")
-                print(f'{player.get_player_name()} has lost {hand.current_bet_amount()} chips')
+                print("AWARDED LOSS\n")
+                print(f'{player.get_player_name()} has lost bet of {hand.current_bet_amount()} chips')
+                hand.set_final_outcome("LOSS")
         return
     
     def send_insurance_requests(self, dealer: Dealer):
@@ -122,14 +145,18 @@ class Round(object):
         Actions:
             - Dealer awards wins, losses and pushed to all players' hands 
         """
-        for player in self.participating_players:
-            for hand in player.hands:
-                # Asses 
+        for player in self.get_participating_players():
+            for hand in player.get_hands():
+                # Check for player natural blackjack
                 if hand.has_natural_blackjack():
                     if player.get_is_insured():
-                        player.add_chips(math.floor(player.get_initial_bet_amount() * 0.5))
-                    dealer.award_push(hand=hand, player=player)
+                        player.add_chips(player.get_initial_bet_amount())
+                        player.add_to_total_winnings(player.get_initial_bet_amount())
+                    player.add_chips(player.get_initial_bet_amount())
+                    player.add_to_total_winnings(player.get_initial_bet_amount())
+                    hand.set_final_outcome("PUSH")
                     continue
+                hand.set_final_outcome("LOSS")               
         return
                     
     
@@ -140,7 +167,7 @@ class Round(object):
     # Setter for participating_players
     def set_participating_players(self, participating_players: List[Player]):
         if not isinstance(participating_players, list) or not all(isinstance(player, Player) for player in participating_players):
-            raise ValueError("participating_players must be a list of Player instances")
+            raise ValueError("participating_players must be a list of Player instances\n")
         self.participating_players = participating_players
 
     # Getter for end_of_round
@@ -150,5 +177,6 @@ class Round(object):
     # Setter for end_of_round
     def set_end_of_round(self, end_of_round: bool):
         if not isinstance(end_of_round, bool):
-            raise ValueError("end_of_round must be a boolean value")
+            raise ValueError("end_of_round must be a boolean value\n")
         self.end_of_round = end_of_round
+        

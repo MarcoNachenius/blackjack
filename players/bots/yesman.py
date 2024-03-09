@@ -23,7 +23,7 @@ class Yesman(Player):
     def request_hit(self, hand: Hand) -> bool:
         return True
     
-    def request_double_down(self, dealer_card: Card):
+    def request_double_down(self, hand: Hand):
         return True
     
     def request_insurance(self) -> bool:

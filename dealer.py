@@ -10,14 +10,9 @@ import math
 
 class Dealer(object):
     """
-    When a Dealer object is created, the starting table deck is also created.\n
-    The dealer is the sole owner and controller of the table deck.\n
-    \n
+    The dealer is the sole owner and controller of the table deck.
     """
     def __init__(self, starting_hand: Hand = None):
-        """
-        self.starting_deck is populated by default with constants.Deck.starting_deck(), but can be adjusted 
-        """
         self.hand: Hand = starting_hand or Hand()
     
     def get_hand(self) -> Hand:
@@ -36,20 +31,24 @@ class Dealer(object):
         hand.set_amount_betted(bet_amount)
         hand.set_active(True)
     
-    def deal_card(self, player_hand: Hand, table_deck: List[Card], hide_card = False):
+    def deal_card(self, player_hand: Hand, table_deck: List[Card], hide_card = False, deal_next_card = False):
         """
         The Dealer removes a random card from the table deck and adds it to a player's hand. \n
         By default, the dealer places the card in the player's starting hand(in the case of a split).
         """
-        # Randomly select a card from the table deck
-        random_card = random.choice(table_deck)
+        if deal_next_card:
+            random_card = table_deck.pop(0)
+        else:
+            # Randomly select a card from the table deck
+            random_card = random.choice(table_deck)
         # Check if card should be hidden
         if not hide_card:
             random_card.make_visible()
         # Add the randomly selected card to the player's hand
         player_hand.add_card(random_card)
         # Remove the card from the table deck
-        table_deck.remove(random_card)
+        if not deal_next_card:
+            table_deck.remove(random_card)
         return
     
     def split_player_hand(self, split_hand: Hand, player: Player, table_deck: List[Card]):
@@ -76,8 +75,9 @@ class Dealer(object):
         self.deal_card(player_hand=split_hand, table_deck=table_deck)
         self.deal_card(player_hand=new_hand, table_deck=table_deck)
         # Subtract bet amount from player
-        player.subtract_chips(amount=player.get_initial_bet_amount())
+        player.subtract_chips(player.get_initial_bet_amount())
         new_hand.set_amount_betted(player.get_initial_bet_amount())
+        player.subtract_from_total_winnings(player.get_initial_bet_amount())
         return
     
     def award_natural_blackjack_win( self, hand: Hand, player: Player):
@@ -90,7 +90,10 @@ class Dealer(object):
         """
         print("NATURAL BLACKJACK WIN")
         print(f'{player.get_player_name()} has won {int(math.floor(hand.get_amount_betted() * 1.5))} chips')
-        player.add_chips(math.floor(hand.get_amount_betted() * 1.5) + hand.get_amount_betted())
+        hand.set_final_outcome("WIN")
+        total_winnings = math.floor(hand.get_amount_betted() * 2.5)
+        player.add_chips(total_winnings)
+        player.add_to_total_winnings(total_winnings)
         hand.deactivate()
     
     
@@ -98,7 +101,10 @@ class Dealer(object):
         """
         Adds bet amount to 
         """
-        player.add_chips(hand.current_bet_amount())
+        push_amount = hand.current_bet_amount()
+        player.add_chips(push_amount)
+        player.add_to_total_winnings(push_amount)
+        hand.set_final_outcome("PUSH")
         print("PUSH")
         print(f'{player.get_player_name()} has been awarded a push')
         return
@@ -126,7 +132,7 @@ class Dealer(object):
                 if all_hands_bust and hand.max_non_bust_score() != 0:
                     all_hands_bust = False
                 # Check if player hand has higher score than dealer hand
-                if hand.max_non_bust_score() > self.hand.max_non_bust_score():
+                if hand.max_non_bust_score() >= self.hand.max_non_bust_score():
                     return True
                     
         return all_hands_bust
@@ -137,7 +143,10 @@ class Dealer(object):
         """
         print("WIN")
         print(f'{player.get_player_name()} has won {hand.current_bet_amount()} chips')
-        player.add_chips(hand.current_bet_amount() * 2)
+        total_winnings = hand.current_bet_amount() * 2
+        player.add_chips(total_winnings)
+        player.add_to_total_winnings(total_winnings)
+        hand.set_final_outcome("WIN")
     
     def insure_player(self, player: Player):
         """
@@ -145,7 +154,9 @@ class Dealer(object):
         If player accepts request, insurance status is turned on (player.is_insured=True)
         """
         player.set_is_insured(True)
-        player.subtract_chips(math.ceil(player.get_initial_bet_amount()*0.5))
+        insurance_amount = math.ceil(player.get_initial_bet_amount()*0.5)
+        player.subtract_chips(insurance_amount)
+        player.subtract_from_total_winnings(insurance_amount)
         return
     
     def hit_player_hand(self, hand: Hand, table_deck: List[Card]):
@@ -172,6 +183,7 @@ class Dealer(object):
         player_hand.set_active(False)
         self.deal_card(player_hand=player_hand, table_deck=table_deck)
         player.subtract_chips(player.get_initial_bet_amount())
+        player.subtract_from_total_winnings(player.get_initial_bet_amount())
         
     
     def deal_initial_cards(self, table_deck: List[Card], participating_players: List[Player]):
