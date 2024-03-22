@@ -6,7 +6,7 @@ class Hand(object):
     """Only first_card or starting_hand may be used as """
     def __init__(self, first_card: Card = None, starting_hand: List[Card] = None):
         """first_card and starting_hand may not be given values simultaneously"""
-        self.hand_id: str = ""
+        self.hand_id: int = 0
         self.cards: List[Card] = starting_hand or []
         if first_card:
             self.cards.append(first_card)
@@ -219,11 +219,11 @@ class Hand(object):
         self.final_outcome = final_outcome
     
     # Getter for hand_id
-    def get_hand_id(self) -> str:
+    def get_hand_id(self) -> int:
         return self.hand_id
 
     # Setter for hand_id
-    def set_hand_id(self, hand_id: str):
-        if not isinstance(hand_id, str):
-            raise ValueError("hand_id must be a string")
+    def set_hand_id(self, hand_id: int):
+        if not isinstance(hand_id, int):
+            raise ValueError("hand_id must be a int")
         self.hand_id = hand_id

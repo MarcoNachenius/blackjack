@@ -2,7 +2,7 @@ from blackjack.players.player import Player
 from blackjack.dealer import Dealer
 from blackjack.round import Round
 from blackjack.card import Card
-from blackjack.constants import Deck
+from blackjack import constants
 from blackjack.print_statements import RoundStatements
 
 from typing import List
@@ -14,11 +14,12 @@ class Game(object):
     Table deck is loaded to 
     """
     def __init__(self, all_players: List[Player] = None, starting_deck: List[Card] = None):
+        self.game_id: int = 0
         self.dealer: Dealer = Dealer()
         self.all_players: List[Player] = all_players
         self.in_progress = True
         self.current_round: Round = None
-        self.table_deck = starting_deck or Deck.starting_deck()
+        self.table_deck = starting_deck or constants.Deck.starting_deck()
     
     def start_game(self):
         # Exceptions
@@ -171,5 +172,18 @@ class Game(object):
         """
         # Check is player is in all_players list
         if player not in self.all_players:
+            print("No player removed: Player is not in self.participating_players")
             return
         self.all_players.remove(player)
+    
+    # Getters and setters
+    # GAME_ID
+    def get_game_id(self) -> int:
+        return self.game_id
+    def set_game_id(self, game_id: int):
+        self.game_id = game_id
+    # IN_PROGRESS    
+    def get_in_progress(self) -> bool:
+        return self.in_progress    
+    def set_in_progress(self, in_progress: bool):
+        self.in_progress = in_progress

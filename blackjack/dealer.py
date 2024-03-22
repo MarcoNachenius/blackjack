@@ -2,7 +2,7 @@ from blackjack.card import Card
 from blackjack.hand import Hand
 from blackjack.players.player import Player
 from blackjack.hand import Hand
-import blackjack.constants
+from blackjack import constants
 
 from typing import List
 import random
@@ -14,6 +14,14 @@ class Dealer(object):
     """
     def __init__(self, starting_hand: Hand = None):
         self.hand: Hand = starting_hand or Hand()
+        self.hand_id: int = 0
+    
+    def get_hand_id(self) -> int:
+        return self.hand
+    
+    def set_hand_id(self, hand_id: int):
+        self.hand = hand_id
+        return
     
     def get_hand(self) -> Hand:
         return self.hand

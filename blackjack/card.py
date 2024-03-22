@@ -7,6 +7,7 @@ class Card(object):
             - Example: Card rank of "Jack" is assigned 10 points in Blackjack 
     """
     def __init__(self, rank: str, suit: str, points: int, visible: bool = False):
+        self.card_id = 0
         self.rank = rank
         self.suit = suit
         self.points = points
@@ -24,4 +25,10 @@ class Card(object):
         "Ace of Spades"
         """
         return f'{self.rank} of {self.suit}'
+    
+    # Getters and setters
+    def get_card_id(self) -> int:
+        return self.card_id
+    def set_card_id(self, card_id: int):
+        self.card_id = card_id
     
