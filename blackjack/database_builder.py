@@ -25,6 +25,7 @@ class DatabaseBuilder(object):
         # ROUNDS TABLE
         create_rounds_table = '''CREATE TABLE Rounds (
                             RoundID INTEGER PRIMARY KEY,
+                            GameID INTEGER,
                             DealerHandID INTEGER,
                             InProgress VARCHAR(10)
                             )'''
@@ -46,7 +47,7 @@ class DatabaseBuilder(object):
                             PlayerID INTEGER,
                             RoundID INTEGER,
                             IsInsured VARCHAR(10),
-                            TotalWinnings INTEGER
+                            InitialBet INTEGER
                             )'''
         self.cursor.execute(create_player_history_table)
         self.cursor.connection.commit()
@@ -86,14 +87,14 @@ class DatabaseBuilder(object):
        return last_game_id[0]
     
     # ROUNDS
-    def insert_into_rounds(self, dealer_hand_id: int, in_progress = "True"):
+    def insert_into_rounds(self, game_id: int, dealer_hand_id: int, in_progress = "True"):
         """
         Adds row to Rounds table. 
         RoundID will be added as AI-PK.
         """
-        sql_command ='''INSERT INTO Rounds(DealerHandID, InProgress)
-                        VALUES(?,?)'''
-        self.connection.execute(sql_command, (dealer_hand_id, in_progress))
+        sql_command ='''INSERT INTO Rounds(GameID, DealerHandID, InProgress)
+                        VALUES(?,?,?)'''
+        self.connection.execute(sql_command, (game_id, dealer_hand_id, in_progress))
         self.connection.commit() 
     def get_last_id_rounds(self) -> int:
        last_game_id = self.connection.execute("SELECT * FROM Rounds ORDER BY RoundID DESC LIMIT 1;").fetchone()
@@ -116,14 +117,14 @@ class DatabaseBuilder(object):
        return last_game_id[0]
    
     # PLAYER_HISTORY
-    def insert_into_player_history(self, player_id: int, round_id: int, is_insured: str = "False", total_winnings: int = 0):
+    def insert_into_player_history(self, player_id: int, round_id: int, is_insured: str = "False", initial_bet: int = 0):
         """
         Adds row to PlayerHistory table. 
         HandComboID will be added as AI-PK.
         """
-        sql_command ='''INSERT INTO PlayerHistory(PlayerID, RoundID, IsInsured, TotalWinnings)
+        sql_command ='''INSERT INTO PlayerHistory(PlayerID, RoundID, IsInsured, InitialBet)
                         VALUES(?,?,?,?)'''
-        self.connection.execute(sql_command, (player_id, round_id, is_insured, total_winnings))
+        self.connection.execute(sql_command, (player_id, round_id, is_insured, initial_bet))
         self.connection.commit() 
     def get_last_hand_combo(self) -> int:
         """
@@ -138,6 +139,7 @@ class DatabaseBuilder(object):
         """
         Adds row to HandHistory table. 
         HandID will be added as AI-PK.
+        HandComID == 0 means that it is a dealer hand.
         """
         sql_command ='''INSERT INTO HandHistory(HandComboID, IsDoubledDown, Outcome)
                         VALUES(?,?,?)'''
@@ -170,33 +172,3 @@ class DatabaseBuilder(object):
         return last_card_id[0]
 
 
-
-
-   
-if __name__ == "__main__":
-    database = DatabaseBuilder()
-    database.create_database()
-    for i in range(10):
-        database.insert_into_games()
-        database.insert_into_rounds(50)
-        database.insert_into_players()
-        database.insert_into_player_history(player_id=100, round_id=50)
-        database.insert_into_hand_history(hand_combo_id=10)
-        database.insert_into_card_history(hand_id=50)
-
-    print("Last game id:")
-    print(database.get_last_id_games())
-    print("Last round id:")
-    print(database.get_last_id_rounds())
-    print("Last player id:")
-    print(database.get_last_id_players())
-    print("Last handcombo id:")
-    print(database.get_last_hand_combo())
-    print("Last hand id:")
-    print(database.get_last_hand_id())
-    print("Last card id:")
-    print(database.get_last_card_id())
-    
-    database.connection.close()
-    os.remove("blackjack.db")
-    

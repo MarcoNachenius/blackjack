@@ -14,10 +14,11 @@ class Player(ABC):
     
     Only players control methods that subtract chips from their balance.
     """
-    def __init__(self, player_name: str, custom_starting_hands: List[Hand] = None, custom_starting_chips: int = 0, custom_initial_bet_amount: int = 0):
+    def __init__(self, player_name: str = "", custom_starting_hands: List[Hand] = None, custom_starting_chips: int = 0, custom_initial_bet_amount: int = 0):
+        self.player_id: int = 0
         self.player_name = player_name # Required field
         self.hands: List[Hand] = custom_starting_hands or [Hand()]
-        self.hand_combo_id: str = ""
+        self.hand_combo_id: int = 0
         self.chips: int = custom_starting_chips or constants.STARTING_CHIPS
         self.initial_bet_amount = 0 or custom_initial_bet_amount
         self.total_bet_amount: int = 0
@@ -164,13 +165,13 @@ class Player(ABC):
         self.player_name = player_name
     
     # Getter for hand_combo_id
-    def get_hand_combo_id(self) -> str:
+    def get_hand_combo_id(self) -> int:
         return self.hand_combo_id
 
     # Setter for hand_combo_id with type verification
-    def set_hand_combo_id(self, hand_combo_id: str):
-        if not isinstance(hand_combo_id, str):
-            raise ValueError("hand_combo_id must be a string")
+    def set_hand_combo_id(self, hand_combo_id: int):
+        if not isinstance(hand_combo_id, int):
+            raise ValueError("hand_combo_id must be an int")
         self.hand_combo_id = hand_combo_id
     
     # Getter for hands
@@ -232,6 +233,16 @@ class Player(ABC):
         if not isinstance(total_winnings, int):
             raise ValueError("total_winnings must be an integer")
         self.total_winnings = total_winnings
+
+    # Getter for player_id
+    def get_player_id(self) -> int:
+        return self.player_id
+
+    # Setter for player_id with type verification
+    def set_player_id(self, player_id: int):
+        if not isinstance(player_id, int):
+            raise ValueError("player_id must be an integer")
+        self.player_id = player_id
         
     def add_to_total_winnings(self, amount: int):
         if not isinstance(amount, int):

@@ -9,9 +9,11 @@ import math
 class Round(object):
     """
     """
-    def __init__(self, participating_players: List[Player] = None):
+    def __init__(self, round_id: int = 0, participating_players: List[Player] = None):
         self.participating_players: List[Player] = participating_players or []
         self.end_of_round = False
+        self.round_id: int = round_id
+        
     
     def clear_round_values(self, dealer: Dealer):
         """
@@ -19,6 +21,7 @@ class Round(object):
         """
         # Clear dealer hand
         dealer.set_hand(Hand())
+        dealer.set_hand_id(0)
         # Clear player values
         for player in self.get_participating_players():
             player.set_initial_bet_amount(0)
@@ -26,6 +29,7 @@ class Round(object):
             player.set_total_bet_amount(0)
             player.set_hands([Hand()])
             player.set_total_winnings(0)
+            player.set_hand_combo_id(0)
         return
             
     def award_dealer_bust_wins(self, dealer: Dealer):
@@ -171,13 +175,18 @@ class Round(object):
             raise ValueError("participating_players must be a list of Player instances\n")
         self.participating_players = participating_players
 
-    # Getter for end_of_round
+    # END_OF_ROUND
     def get_end_of_round(self) -> bool:
         return self.end_of_round
-
-    # Setter for end_of_round
     def set_end_of_round(self, end_of_round: bool):
         if not isinstance(end_of_round, bool):
             raise ValueError("end_of_round must be a boolean value\n")
         self.end_of_round = end_of_round
-        
+    
+    # ROUND_ID
+    def get_round_id(self) -> int:
+        return self.round_id
+    def set_round_id(self, round_id: int):
+        if not isinstance(round_id, int):
+            raise ValueError("round_id must be a int value\n")
+        self.round_id = round_id

@@ -17,18 +17,16 @@ class Dealer(object):
         self.hand_id: int = 0
     
     def get_hand_id(self) -> int:
-        return self.hand
+        return self.hand_id
     
     def set_hand_id(self, hand_id: int):
-        self.hand = hand_id
-        return
+        self.hand_id = hand_id
     
     def get_hand(self) -> Hand:
         return self.hand
     
     def set_hand(self, hand: Hand):
         self.hand = hand
-        return
     
     def accept_player_bet(self, bet_amount: int, hand: Hand, player: Player):
         """

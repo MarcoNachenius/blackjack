@@ -151,9 +151,6 @@ class Game(object):
         self.current_round.award_wins_comparatively(dealer=self.dealer)
         RoundStatements.round_completion_results(dealer_hand=self.dealer.get_hand(), participating_players=self.current_round.get_participating_players())
         
-        # Clear round values
-        self.current_round.clear_round_values(dealer=self.dealer)
-        return
     
     def add_player(self, player: Player):
         """
@@ -187,3 +184,21 @@ class Game(object):
         return self.in_progress    
     def set_in_progress(self, in_progress: bool):
         self.in_progress = in_progress
+    # ALL_PLAYERS
+    def get_all_players(self) -> List[Player]:
+        return self.all_players
+    def set_all_players(self, all_players: List[Player]):
+        if not isinstance(all_players, list) or not all(isinstance(player, Player) for player in all_players):
+            raise ValueError("all_players must be a list of Player instances\n")
+        self.all_players = all_players
+    # CURRENT_ROUND
+    def get_current_round(self) -> Round:
+        return self.current_round
+    def set_current_round(self, round: Round):
+        self.current_round = round
+    # DEALER
+    def set_dealer(self, dealer: Dealer):
+        self.dealer = dealer
+    def get_dealer(self) -> Dealer:
+        return self.dealer
+    
