@@ -3,16 +3,21 @@ from pathlib import Path
 import os
 
 class DatabaseBuilder(object):
+    
+    """
+    This class is responsible for the creation of the database, tables, and table entries.
+    """
 
-    def __init__(self, db_name = 'blackjack.db') -> None:
-        BASE_DIR = Path(__file__).parent.parent
-        self.connection = sqlite3.Connection(BASE_DIR / db_name)
+    def __init__(self, db_name = 'blackjack.db', base_dir = None) -> None:
+        self.db_name = db_name
+        self.base_dir = base_dir or Path(__file__).parent.parent
+        self.connection = sqlite3.Connection(self.base_dir / self.db_name)
         self.cursor = self.connection.cursor()
     
     
     def create_database(self):
         """
-        Creates all tables of the database.
+        Creates database and all tables.
         """
         # GAMES TABLE
         create_games_table = '''CREATE TABLE Games (
@@ -171,4 +176,8 @@ class DatabaseBuilder(object):
         self.connection.commit()
         return last_card_id[0]
 
-
+    def delete_database(self):
+        """
+        Deletes database from pre-defined dir and db name
+        """
+        os.remove(self.base_dir / self.db_name)

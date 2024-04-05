@@ -8,3 +8,4 @@ from blackjack.dealer import Dealer
 from blackjack.game import Game
 from blackjack.print_statements import *
 from blackjack.round import Round
+from blackjack.players.bots.basic_strategist import BasicStrategist

@@ -18,7 +18,7 @@ class Game(object):
         self.dealer: Dealer = Dealer()
         self.all_players: List[Player] = all_players
         self.in_progress = True
-        self.current_round: Round = None
+        self.current_round: Round = Round()
         self.table_deck = starting_deck or constants.Deck.starting_deck()
     
     def start_game(self):
