@@ -1,12 +1,12 @@
 import unittest
 import copy
 # Project files
-from blackjack.card import Card
+from blackjack.game_objects.card import Card
 from blackjack.constants import Deck
-from blackjack.dealer import Dealer
-from blackjack.game import Game
-from blackjack.hand import Hand
-from blackjack.round import Round
+from blackjack.game_objects.dealer import Dealer
+from blackjack.game_objects.game import Game
+from blackjack.game_objects.hand import Hand
+from blackjack.game_objects.round import Round
 # Player objects
 from blackjack.players.human import Human
 from blackjack.players.bots.yesman import Yesman

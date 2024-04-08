@@ -1,5 +1,5 @@
 from typing import List
-from blackjack.card import Card
+from blackjack.game_objects.card import Card
 
 # String constants
 SUIT_TYPES = ["Spades", "Hearts", "Diamonds", "Clubs"]

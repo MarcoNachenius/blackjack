@@ -1,5 +1,5 @@
-from blackjack.hand import Hand
-from blackjack.dealer import Dealer
+from blackjack.game_objects.hand import Hand
+from blackjack.game_objects.dealer import Dealer
 from blackjack.players.player import Player
 from blackjack.print_statements import *
 

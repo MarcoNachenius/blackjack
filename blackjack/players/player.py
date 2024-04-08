@@ -1,8 +1,8 @@
-from blackjack.hand import Hand
+from blackjack.game_objects.hand import Hand
 from blackjack import constants
 
 from typing import List
-from abc import ABC, abstractclassmethod
+from abc import ABC
 import math
 
 class Player(ABC):
@@ -112,7 +112,7 @@ class Player(ABC):
         """
     
     # ABSTRACT METHODS
-    @abstractclassmethod
+    @classmethod
     def request_split_pair(self) -> bool:
         """
         Requests if a player wants to split pair after first card of dealer is shown.\n
@@ -121,7 +121,7 @@ class Player(ABC):
         """
         pass
     
-    @abstractclassmethod
+    @classmethod
     def request_bet_amount(self) -> int:
         """
         Returns the amount of chips that a player would like to bet\n
@@ -131,19 +131,19 @@ class Player(ABC):
         """
         pass
     
-    @abstractclassmethod
+    @classmethod
     def request_hit(self, hand: Hand) -> bool:
         """
         Returns True if a player wants dealer to add card to hand
         """
     
-    @abstractclassmethod
+    @classmethod
     def request_double_down(self, hand: Hand) -> bool:
         """
         Returns True if player decides to double down a hand
         """
     
-    @abstractclassmethod
+    @classmethod
     def request_insurance(self) -> bool:
         """
         Player only receives insurance request it possess enough chips

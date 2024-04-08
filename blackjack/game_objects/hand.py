@@ -1,4 +1,4 @@
-from blackjack.card import Card
+from blackjack.game_objects.card import Card
 
 from typing import List
 

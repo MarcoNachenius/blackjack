@@ -1,7 +1,7 @@
 from blackjack.players.player import Player
-from blackjack.dealer import Dealer
-from blackjack.round import Round
-from blackjack.card import Card
+from blackjack.game_objects.dealer import Dealer
+from blackjack.game_objects.round import Round
+from blackjack.game_objects.card import Card
 from blackjack import constants
 from blackjack.print_statements import RoundStatements
 
