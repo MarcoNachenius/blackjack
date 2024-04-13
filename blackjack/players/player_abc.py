@@ -1,6 +1,8 @@
 from blackjack.game_objects.hand import Hand
 from blackjack import constants
-
+from blackjack.strategy_manager.player_strategies.hard_totals import HardTotalStrategy
+from blackjack.strategy_manager.player_strategies.soft_totals import SoftTotalStrategy
+import blackjack.players.bots.perfect_strategist.strategy_matrixes as strategy_matrixes
 from typing import List
 from abc import ABC
 import math

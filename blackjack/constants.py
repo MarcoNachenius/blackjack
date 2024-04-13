@@ -1,7 +1,23 @@
 from typing import List
 from blackjack.game_objects.card import Card
 
-# String constants
+# Strategy objects
+NAMES_TO_POINTS_DICT = {
+    "Ace" : 1,
+    "Two" : 2,
+    "Three" : 3,
+    "Four" : 4,
+    "Five" : 5,
+    "Six" : 6,
+    "Seven" : 7,
+    "Eight" : 8,
+    "Nine" : 9,
+    "Ten" : 10,
+    "Jack" : 10,
+    "King" : 10,
+    "Queen" : 10 }
+
+# Card objects
 SUIT_TYPES = ["Spades", "Hearts", "Diamonds", "Clubs"]
 CARD_NAMES = [
     "Ace",
@@ -16,24 +32,20 @@ CARD_NAMES = [
     "Ten",
     "Jack",
     "King",
-    "Queen"]
+    "Queen" ]
 
-# Shoe variable
-DECKS_IN_PLAY = 5
+# Shoe variables
 PENETRATION_POINT_PERCENTAGE = 60
-STARTING_CHIPS = 1000
 
-# Insurance
+
+# Game Settings
 ENABLE_INSURANCE = True
-INSURANCE_PAYBACK_PERCENTAGE: 200
-
-# Unassigned
-FIST_BLACKJACK_PAYBACK_PERCENTAGE = 150
 MAX_HAND_LIMIT = 4
-
 MIN_BET_AMOUNT = 2
-
 DEALER_HIT_LIMIT = 17
+STARTING_CHIPS = 1000
+DECKS_IN_PLAY = 5
+
 class Deck(object):
     """
     Deck doc string

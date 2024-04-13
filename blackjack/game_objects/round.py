@@ -1,4 +1,4 @@
-from blackjack.players.player import Player
+from blackjack.players.player_abc import Player
 from blackjack.game_objects.dealer import Dealer
 from blackjack.game_objects.hand import Hand
 from blackjack.game_objects.card import Card

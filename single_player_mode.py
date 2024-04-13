@@ -1,16 +1,13 @@
-from blackjack.game import Game
+from blackjack.game_objects.game import Game
 from blackjack.players.human import Human
 from blackjack.players.bots.yesman import Yesman
 from blackjack.database_manager.db_builder import DatabaseBuilder
-from blackjack.database_manager.db_setters import DatabaseUpdater
-
-import os
+from blackjack.database_manager.db_setters import DatabaseSetters
 
 if __name__ == "__main__":
-    db_name = 'spg.db'
-    database = DatabaseBuilder(db_name=db_name)
+    database = DatabaseBuilder()
     database.create_database()
-    db_updater = DatabaseUpdater(db_name=db_name)
+    db_updater = DatabaseSetters()
     all_players = [Human(player_name="Foo")]
     game = Game(all_players=all_players)
     
@@ -60,5 +57,7 @@ if __name__ == "__main__":
     
     database.connection.close()
     db_updater.connection.close()
-    #database.delete_database()
+    delete_database = input("Delete database?[y/n]")
+    if delete_database == "y":
+        database.delete_database()
     
