@@ -1,5 +1,5 @@
 import unittest
-from blackjack.strategy_manager.player_strategies.strategy_abc import StrategyMatrix
+from blackjack.strategy_manager.strategy_matrixes.strategy_abc import StrategyMatrix
 import numpy as np
 
 class test_strategy_matrix(unittest.TestCase):

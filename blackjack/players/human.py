@@ -10,7 +10,7 @@ class Human(Player):
     def __init__(self, player_name: str, custom_starting_hands: List[Hand] = None, custom_starting_chips: int = None, custom_initial_bet_amount: int = None):
         super().__init__(player_name=player_name ,custom_starting_hands=custom_starting_hands , custom_starting_chips=custom_starting_chips, custom_initial_bet_amount=custom_initial_bet_amount)
     
-    def request_split_pair(self, hand: Hand) -> bool:
+    def request_split_pair(self, hand: Hand, dealer_upcard: Card) -> bool:
         HandStatements.hand_cards_and_points(hand=hand)
         response = input("Split pair? [y/n]\n")
         if response == "y":
@@ -30,14 +30,14 @@ class Human(Player):
         total_bet_amount = int(input("Enter the amount of chips you would like to bet:\n"))
         return total_bet_amount
     
-    def request_hit(self, hand: Hand) -> bool:
+    def request_hit(self, hand: Hand, dealer_upcard: Card) -> bool:
         HandStatements.hand_cards_and_points(hand=hand)
         hit_request = input("Would you like to add a card to hand? [y/n]\n")
         if hit_request == "y":
             return True
         return False
     
-    def request_double_down(self, hand: Hand):
+    def request_double_down(self, hand: Hand, dealer_upcard: Card):
         HandStatements.hand_cards_and_points(hand=hand)
         double_down = input("Would you like to double down your hand? [y/n]\n")
         if double_down == "y":

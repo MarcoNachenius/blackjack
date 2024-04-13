@@ -1,22 +1,6 @@
 from typing import List
 from blackjack.game_objects.card import Card
 
-# Strategy objects
-NAMES_TO_POINTS_DICT = {
-    "Ace" : 1,
-    "Two" : 2,
-    "Three" : 3,
-    "Four" : 4,
-    "Five" : 5,
-    "Six" : 6,
-    "Seven" : 7,
-    "Eight" : 8,
-    "Nine" : 9,
-    "Ten" : 10,
-    "Jack" : 10,
-    "King" : 10,
-    "Queen" : 10 }
-
 # Card objects
 SUIT_TYPES = ["Spades", "Hearts", "Diamonds", "Clubs"]
 CARD_NAMES = [
@@ -34,17 +18,29 @@ CARD_NAMES = [
     "King",
     "Queen" ]
 
-# Shoe variables
-PENETRATION_POINT_PERCENTAGE = 60
+NAMES_TO_POINTS_DICT = {
+    "Ace" : 1,
+    "Two" : 2,
+    "Three" : 3,
+    "Four" : 4,
+    "Five" : 5,
+    "Six" : 6,
+    "Seven" : 7,
+    "Eight" : 8,
+    "Nine" : 9,
+    "Ten" : 10,
+    "Jack" : 10,
+    "King" : 10,
+    "Queen" : 10 }
 
 
 # Game Settings
-ENABLE_INSURANCE = True
-MAX_HAND_LIMIT = 4
-MIN_BET_AMOUNT = 2
-DEALER_HIT_LIMIT = 17
-STARTING_CHIPS = 1000
-DECKS_IN_PLAY = 5
+MAX_HAND_LIMIT = 4 # Max number of hands a player can have in play during a round
+MIN_BET_AMOUNT = 2 # Min amount of chips that a player can bet
+DEALER_HIT_LIMIT = 17 # If dealer's max non-bust score is above this amount, dealer will end round and award wins/losses/pushes
+STARTING_CHIPS = 1000 # Default starting balance of new players when they are created
+DECKS_IN_PLAY = 5 # Amount of decks on the table when a new game starts
+PENETRATION_POINT_PERCENTAGE = 60 # When amount of cards remaining in table deck goes below this percentage, another deck is added to table deck
 
 class Deck(object):
     """

@@ -1,8 +1,6 @@
 from blackjack.game_objects.hand import Hand
 from blackjack import constants
-from blackjack.strategy_manager.player_strategies.hard_totals import HardTotalStrategy
-from blackjack.strategy_manager.player_strategies.soft_totals import SoftTotalStrategy
-import blackjack.players.bots.perfect_strategist.strategy_matrixes as strategy_matrixes
+from blackjack.game_objects.card import Card
 from typing import List
 from abc import ABC
 import math
@@ -115,7 +113,7 @@ class Player(ABC):
     
     # ABSTRACT METHODS
     @classmethod
-    def request_split_pair(self) -> bool:
+    def request_split_pair(self, dealer_upcard: Card, hand: Hand) -> bool:
         """
         Requests if a player wants to split pair after first card of dealer is shown.\n
         Returns True if the player has decided to split hand. \n
@@ -134,13 +132,13 @@ class Player(ABC):
         pass
     
     @classmethod
-    def request_hit(self, hand: Hand) -> bool:
+    def request_hit(self, dealer_upcard: Card, hand: Hand) -> bool:
         """
         Returns True if a player wants dealer to add card to hand
         """
     
     @classmethod
-    def request_double_down(self, hand: Hand) -> bool:
+    def request_double_down(self, dealer_upcard: Card, hand: Hand) -> bool:
         """
         Returns True if player decides to double down a hand
         """

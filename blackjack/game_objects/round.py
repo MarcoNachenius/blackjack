@@ -76,7 +76,7 @@ class Round(object):
         if not hand.is_active():
             return
         while hand.is_busted() == False and hand.is_active():
-            if player.request_hit(hand=hand):
+            if player.request_hit(hand=hand, dealer_upcard=dealer.get_hand().get_cards()[0]):
                 dealer.hit_player_hand(hand=hand, table_deck=table_deck)
             else:
                 hand.set_active(False)
@@ -91,7 +91,7 @@ class Round(object):
         """
         while hand.is_splittable() and player.is_able_to_split() and not hand.get_rejected_split_request():
             # Send split request to player
-            if player.request_split_pair(hand=hand):
+            if player.request_split_pair(hand=hand, dealer_upcard = dealer.get_hand().get_cards()[0]):
                 dealer.split_player_hand(split_hand=hand, player=player, table_deck=table_deck)
             else: 
                 hand.set_rejected_split_request(True)
@@ -100,7 +100,7 @@ class Round(object):
     def send_double_down_request(self, dealer: Dealer, table_deck: List[Card], player: Player, hand: Hand):
         if not player.is_able_to_double_down():
             return
-        if player.request_double_down(hand=hand):
+        if player.request_double_down(hand=hand, dealer_upcard = dealer.get_hand().get_cards()[0]):
             dealer.double_down_player_hand(player_hand=hand, player=player, table_deck=table_deck)
         return
     

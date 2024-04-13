@@ -1,6 +1,6 @@
 from blackjack.game_objects.game import Game
 from blackjack.players.human import Human
-from blackjack.players.bots.yesman import Yesman
+from blackjack.players.bots.perfect_strategist.perfect_strategist import PerfectStrategist
 from blackjack.database_manager.db_builder import DatabaseBuilder
 from blackjack.database_manager.db_setters import DatabaseSetters
 
@@ -8,7 +8,7 @@ if __name__ == "__main__":
     database = DatabaseBuilder()
     database.create_database()
     db_updater = DatabaseSetters()
-    all_players = [Human(player_name="Foo")]
+    all_players = [Human(player_name="Marco"), PerfectStrategist(player_name="Foo"), PerfectStrategist(player_name="Bar")]
     game = Game(all_players=all_players)
     
     

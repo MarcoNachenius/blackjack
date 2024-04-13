@@ -1,10 +1,10 @@
 import numpy as np
 
-# HART TOTAL MATRIX
-#0 = Stand
-#1 = Hit
-#2 = Double down if allowed, otherwise hit 
-#3 = Double down if allowed, otherwise stand 
+# HARD TOTAL MATRIX
+# 0 = Stand
+# 1 = Hit
+# 2 = Double down if allowed, otherwise hit 
+# 3 = Double down if allowed, otherwise stand 
 hard_totals = np.array([
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #21
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #20
@@ -22,14 +22,15 @@ hard_totals = np.array([
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], #8
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], #7
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], #6
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]  #5
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],  #5
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]  #4
 ], dtype= int)
 
 # SOFT TOTAL MATRIX
-#0 = Stand
-#1 = Hit
-#2 = Double down if allowed, otherwise hit 
-#3 = Double down if allowed, otherwise stand
+# 0 = Stand
+# 1 = Hit
+# 2 = Double down if allowed, otherwise hit 
+# 3 = Double down if allowed, otherwise stand
 soft_totals = np.array([
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #21
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #20
@@ -49,6 +50,22 @@ soft_totals = np.array([
     [1, 1, 2, 2, 2, 1, 1, 1, 1, 1], #6
     [1, 1, 2, 2, 2, 1, 1, 1, 1, 1], #5
     [1, 1, 1, 2, 2, 1, 1, 1, 1, 1], #4
-    [1, 1, 1, 2, 2, 1, 1, 1, 1, 1],  #3
+    [1, 1, 1, 2, 2, 1, 1, 1, 1, 1], #3
     [1, 1, 1, 2, 2, 1, 1, 1, 1, 1]  #2
+], dtype= int)
+
+# SPLIT PAIR
+# 0 = Reject split request
+# 1 = Accept split request
+split_pairs = np.array([
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], #Aces
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #Tens
+    [1, 1, 1, 1, 1, 0, 1, 1, 0, 0], #Nines
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], #Eights
+    [1, 1, 1, 1, 1, 1, 0, 0, 0, 0], #Sevens
+    [1, 1, 1, 1, 1, 0, 0, 0, 0, 0], #Sixes
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #Fives
+    [0, 0, 0, 1, 1, 0, 0, 0, 0, 0], #Fours
+    [1, 1, 1, 1, 1, 1, 0, 0, 0, 0], #Threes
+    [1, 1, 1, 1, 1, 1, 0, 0, 0, 0]  #Twos
 ], dtype= int)

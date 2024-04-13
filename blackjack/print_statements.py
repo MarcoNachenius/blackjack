@@ -18,12 +18,13 @@ class HandStatements(object):
             Jack of Hearts
         Highest score: 18
         """
-        print("Hand:")
-        if hand.get_final_outcome() != "":
-            print(f'Final outcome: {hand.get_final_outcome()}')
+        print(f'    Hand:')
         for card in hand.cards:
-            print(f'    {card.full_name()}')
-        print(f'Highest score: {hand.max_non_bust_score()}')
+            print(f'        {card.full_name()}')
+        print(f'    Highest score: {hand.max_non_bust_score()}')
+        print(f'    Doubled down: {hand.is_doubled_down()}')
+        if hand.get_final_outcome() != "":
+            print(f'    Final outcome: {hand.get_final_outcome()}')
         print("")
         return 
 class RoundStatements(object):
