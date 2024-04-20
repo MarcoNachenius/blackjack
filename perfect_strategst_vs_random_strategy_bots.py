@@ -15,9 +15,9 @@ from blackjack.players.bots.bot_builder import BotBuilder
 if __name__ == "__main__":
     
     # PRINT VALUES
-    refresh_rate = 100# Game results are printed after specified amount of simulations
+    refresh_rate = 10# Game results are printed after specified amount of simulations
     # GAME VALUES
-    gamer_per_simulation = 5 # Amount of games should be odd number to avoid ties
+    games_per_simulation = 5 # Amount of games should be odd number to avoid ties
     max_number_of_rounds = 100
     rounds_played = 0
     winner = None
@@ -34,7 +34,7 @@ if __name__ == "__main__":
         games_won_by_random_strategist = 0
 
         total_simulations += 1
-        for _ in range(gamer_per_simulation):
+        for _ in range(games_per_simulation):
             # Create game and player objects
             random_strategist = BotBuilder.return_random_player()
             perfect_strategist = PerfectStrategist()
@@ -55,16 +55,18 @@ if __name__ == "__main__":
                     break
                 # Start new round
                 game.start_new_round()
-                game.current_round.clear_round_values(dealer=game.get_dealer())
+                # Check for round limit
                 rounds_played += 1
                 total_rounds += 1
+                if rounds_played < max_number_of_rounds:
+                    game.current_round.clear_round_values(dealer=game.get_dealer())
             
             # Check for winner when max round amount is reached
             if len(game.current_round.get_participating_players()) == 2:
-               if perfect_strategist.get_chips() > random_strategist.get_chips():
-                   games_won_by_perfect_strategist += 1
-               else:
-                   games_won_by_random_strategist += 1
+                if perfect_strategist.get_chips() > random_strategist.get_chips():
+                    games_won_by_perfect_strategist += 1
+                else:
+                    games_won_by_random_strategist += 1
                 
                 
             #if premature_game_winner is not None:
@@ -84,6 +86,9 @@ if __name__ == "__main__":
             print(f'Total simulations: {total_simulations}')
             print("=================================\n\n")
         
+        if games_won_by_perfect_strategist + games_won_by_random_strategist != games_per_simulation:
+            print("Simulation error!!!!")
+            break
         
         # Check if random bot has beaten perfect strategist
         if games_won_by_random_strategist > games_won_by_perfect_strategist:
