@@ -3,8 +3,9 @@ import numpy as np
 # HARD TOTAL MATRIX
 # 0 = Stand
 # 1 = Hit
-# 2 = Double down if allowed, otherwise hit 
-# 3 = Double down if allowed, otherwise stand 
+# 2 = Double down, hit 
+# 3 = Double down, stand
+# 4 =  
 hard_totals = np.array([
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #21
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #20
@@ -22,15 +23,15 @@ hard_totals = np.array([
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], #8
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], #7
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], #6
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],  #5
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], #5
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]  #4
 ], dtype= int)
 
 # SOFT TOTAL MATRIX
 # 0 = Stand
 # 1 = Hit
-# 2 = Double down if allowed, otherwise hit 
-# 3 = Double down if allowed, otherwise stand
+# 2 = Double down, hit 
+# 3 = Double down, stand
 soft_totals = np.array([
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #21
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #20

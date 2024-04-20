@@ -22,6 +22,7 @@ class Game(object):
         self.table_deck = starting_deck or constants.Deck.starting_deck()
     
     def start_game(self):
+        # TODO
         # Exceptions
         # - Has the game been loaded with a dealer and players?
         
@@ -31,9 +32,9 @@ class Game(object):
         while self.in_progress:
             pass
     
-    def start_new_round(self):
+    def start_new_round(self, print_game_log: bool = False):
         """
-        Initiates a new round of Blackjack.
+        Initiates a new round of Blackjack. Table deck capacity check is performed at the end of every round.
 
         - 1. Betting Phase:
             - 1.1 Dealer takes bets from players at the table.
@@ -94,36 +95,48 @@ class Game(object):
         
         # Initiate new round
         self.current_round = Round()
-        print("NEW ROUND INITIATED")
-        print("TAKING BETS FROM PLAYERS")
+        # PRINT STATEMENTS
+        if print_game_log:
+            print("NEW ROUND INITIATED")
+            print("TAKING BETS FROM PLAYERS")
         # STEP 1 - Betting phase
-        self.current_round.send_bet_requests(all_players=self.all_players, dealer=self.dealer)      
-        # Terminal Output
-        for player in self.current_round.get_participating_players():
-            RoundStatements.successful_bet_placed(player=player)
-        
-        # Check for lack of participating players
+        self.current_round.send_bet_requests(all_players=self.all_players, dealer=self.dealer)
         if len(self.current_round.get_participating_players()) == 0:
-            print("UNUSUAL ROUND ENDING: ROUND ENDED DUE TO LACK OF PARTICIPATING PLAYERS")
             return
-        
-        print("DEALING INITIAL HANDS")
+        # PRINT STATEMENTS
+        if print_game_log:      
+            # Terminal Output
+            for player in self.current_round.get_participating_players():
+                RoundStatements.successful_bet_placed(player=player)
+
+            # Check for lack of participating players
+            if len(self.current_round.get_participating_players()) == 0:
+                print("UNUSUAL ROUND ENDING: ROUND ENDED DUE TO LACK OF PARTICIPATING PLAYERS")
+                return
+
+            print("DEALING INITIAL HANDS")
         # STEP 2 - Initial deal
         # 2.1 Dealer deals two cards for every player who has placed a bet
         # 2.2 Dealer deals two cards for themselves, one face-up and one face-down.
         self.dealer.deal_initial_cards(table_deck=self.table_deck, participating_players=self.current_round.participating_players)
         # Terminal output
-        RoundStatements.initial_deal_report(dealer_hand=self.dealer.hand, participating_players=self.current_round.get_participating_players())
+        # PRINT STATEMENTS
+        if print_game_log:
+            RoundStatements.initial_deal_report(dealer_hand=self.dealer.hand, participating_players=self.current_round.get_participating_players())
         
-        print("CHECKING FOR DEALER NATURAL")
+            print("CHECKING FOR DEALER NATURAL")
         # STEP 3 - Check for naturals
         # 3.1 If the dealer's face-up card is an Ace, offer players insurance.
         if self.dealer.hand.cards[0].rank == "Ace":
-            print("DEALER HAS ACE, SENDING INSURANCE REQUESTS")
+            # PRINT STATEMENTS
+            if print_game_log:
+                print("DEALER HAS ACE, SENDING INSURANCE REQUESTS")
             self.current_round.send_insurance_requests(dealer=self.dealer)
         # 3.2 - Evaluate face down card
         if self.dealer.hand.has_natural_blackjack():
-            print("DEALER NATURAL BLACKJACK FOUND")
+            # PRINT STATEMENTS
+            if print_game_log:
+                print("DEALER NATURAL BLACKJACK FOUND")
             self.current_round.conclude_insurance_round(dealer=self.dealer)
             self.current_round.clear_round_values(dealer=self.dealer)
             return
@@ -146,10 +159,14 @@ class Game(object):
         while self.dealer.needs_to_hit_again(participating_players=self.current_round.participating_players):
             self.dealer.deal_card(player_hand=self.dealer.get_hand(), table_deck=self.table_deck)
         
-        
-        print("AWARDING WINS")
+        # PRINT STATEMENTS
+        if print_game_log:
+            print("AWARDING WINS")
         self.current_round.award_wins_comparatively(dealer=self.dealer)
-        RoundStatements.round_completion_results(dealer_hand=self.dealer.get_hand(), participating_players=self.current_round.get_participating_players())
+        # PRINT STATEMENTS
+        if print_game_log:
+            RoundStatements.round_completion_results(dealer_hand=self.dealer.get_hand(), participating_players=self.current_round.get_participating_players())
+        self.perform_table_deck_capacity_check()
         
     
     def add_player(self, player: Player):
@@ -172,8 +189,22 @@ class Game(object):
             print("No player removed: Player is not in self.participating_players")
             return
         self.all_players.remove(player)
+
+    def perform_table_deck_capacity_check(self):
+        """
+        Checks if the remaining amount of cards falls below the minimum allowed capacity percentage.
+        If the amount of cards in the table deck falls below this percentage, another deck will be added
+        to the table deck.
+        """
+        total_capacity = constants.DECKS_IN_PLAY * 52
+        remaining_capacity_percentage = (len(self.table_deck)/total_capacity) * 100
+        
+        # Check if remaining cards fall below minimum allowed capacity
+        if remaining_capacity_percentage < constants.MIN_TABLE_DECK_CAPACITY_PERCENTAGE:
+            self.table_deck.extend(constants.Deck.full_deck())
+        return
     
-    # Getters and setters
+    # GETTERS AND SETTERS
     # GAME_ID
     def get_game_id(self) -> int:
         return self.game_id

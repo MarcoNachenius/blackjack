@@ -86,7 +86,7 @@ class Dealer(object):
         player.subtract_from_total_winnings(player.get_initial_bet_amount())
         return
     
-    def award_natural_blackjack_win( self, hand: Hand, player: Player):
+    def award_natural_blackjack_win( self, hand: Hand, player: Player, print_outcomes: bool = False):
         """
         Transfers winning amount to player's chips
         
@@ -94,8 +94,9 @@ class Dealer(object):
         Assumes player has natural blackjack\n
         If player is awarded an amount of chips that is not a whole number, the amount will be floored(rounded down). 
         """
-        print("NATURAL BLACKJACK WIN")
-        print(f'{player.get_player_name()} has won {int(math.floor(hand.get_amount_betted() * 1.5))} chips')
+        if print_outcomes:
+            print("NATURAL BLACKJACK WIN")
+            print(f'{player.get_player_name()} has won {int(math.floor(hand.get_amount_betted() * 1.5))} chips')
         hand.set_final_outcome("WIN")
         total_winnings = math.floor(hand.get_amount_betted() * 2.5)
         player.add_chips(total_winnings)
@@ -103,7 +104,7 @@ class Dealer(object):
         hand.deactivate()
     
     
-    def award_push(self, hand: Hand, player: Player):
+    def award_push(self, hand: Hand, player: Player, print_results: bool = False):
         """
         Adds bet amount to 
         """
@@ -111,8 +112,9 @@ class Dealer(object):
         player.add_chips(push_amount)
         player.add_to_total_winnings(push_amount)
         hand.set_final_outcome("PUSH")
-        print("PUSH")
-        print(f'{player.get_player_name()} has been awarded a push')
+        if print_results:
+            print("PUSH")
+            print(f'{player.get_player_name()} has been awarded a push')
         return
     
     def needs_to_hit_again(self, participating_players: List[Player]) -> bool:
@@ -143,12 +145,13 @@ class Dealer(object):
                     
         return all_hands_bust
     
-    def award_win(self, hand: Hand, player: Player):
+    def award_win(self, hand: Hand, player: Player, print_results: bool = False):
         """
         Adds twice the bet amount to player chips
         """
-        print("WIN")
-        print(f'{player.get_player_name()} has won {hand.current_bet_amount()} chips')
+        if print_results:
+            print("WIN")
+            print(f'{player.get_player_name()} has won {hand.current_bet_amount()} chips')
         total_winnings = hand.current_bet_amount() * 2
         player.add_chips(total_winnings)
         player.add_to_total_winnings(total_winnings)

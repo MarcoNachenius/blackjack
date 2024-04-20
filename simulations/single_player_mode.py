@@ -8,7 +8,7 @@ if __name__ == "__main__":
     database = DatabaseBuilder()
     database.create_database()
     db_updater = DatabaseSetters()
-    all_players = [Human(player_name="Marco"), PerfectStrategist(player_name="Foo"), PerfectStrategist(player_name="Bar")]
+    all_players = [PerfectStrategist(player_name="Foo"), PerfectStrategist(player_name="Bar")]
     game = Game(all_players=all_players)
     
     

@@ -1,7 +1,10 @@
 import unittest
+import numpy as np
 
 from blackjack.players.bots.perfect_strategist.perfect_strategist import PerfectStrategist
 import blackjack.players.bots.perfect_strategist.strategy_matrixes as strategy_matrixes
+from blackjack.strategy_manager.strategy_matrixes.soft_totals import SoftTotalStrategy
+from blackjack.strategy_manager.strategy_matrixes.hard_totals import HardTotalStrategy
 from blackjack.game_objects.card import Card
 from blackjack.game_objects.hand import Hand
 
@@ -43,7 +46,6 @@ class TestHardTotalStrategy(unittest.TestCase):
         
     
     def test_double_down_action_numbers(self):
-        
         test_player = PerfectStrategist(player_name="test_player")
         
         # Test actions when player hard total is 9
@@ -83,7 +85,6 @@ class TestHardTotalStrategy(unittest.TestCase):
 class TestSoftTotalStrategy(unittest.TestCase):
     
     def test_get_and_set_action_number(self):
-        
         test_player = PerfectStrategist(player_name="test_player")
         # Test transfer of soft total matrix
         self.assertEqual(test_player.soft_total_strategy.get_strategy_matrix().all(), strategy_matrixes.soft_totals.all())
@@ -124,11 +125,11 @@ class TestSoftTotalStrategy(unittest.TestCase):
         dealer_upcard = six_of_diamonds
         action = test_player.request_double_down(dealer_upcard=dealer_upcard, hand=test_player.get_hands()[0])
         self.assertTrue(action)
+        # Test double down
 
 class TestSplitPairStrategy(unittest.TestCase):
     
     def test_get_and_set_action_number(self):
-        
         test_player = PerfectStrategist(player_name="test_player")
         
         # Test transfer of split pair matrix
@@ -185,3 +186,115 @@ class TestHitStrategy(unittest.TestCase):
         dealer_upcard = nine_of_spades
         action = test_player.request_hit(dealer_upcard=dealer_upcard, hand=test_player.get_hands()[0])
         self.assertTrue(action)
+
+class TestSoftTotalPermutations(unittest.TestCase):
+    
+    def test_next_permutations(self):
+        test_player = PerfectStrategist(player_name="test_player")
+        next_permutation = np.array([
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #21
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #20
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #19
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #18
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #17
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #16
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #15
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #14
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #13
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #12
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #11
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #10
+            [0, 0, 0, 0, 3, 0, 0, 0, 0, 0], #9
+            [3, 3, 3, 3, 3, 0, 0, 1, 1, 1], #8
+            [1, 2, 2, 2, 2, 1, 1, 1, 1, 1], #7
+            [1, 1, 2, 2, 2, 1, 1, 1, 1, 1], #6
+            [1, 1, 2, 2, 2, 1, 1, 1, 1, 1], #5
+            [1, 1, 1, 2, 2, 1, 1, 1, 1, 1], #4
+            [1, 1, 1, 2, 2, 1, 1, 1, 1, 1], #3
+            [1, 1, 1, 2, 2, 1, 1, 1, 1, 2]  #2
+        ], dtype= int)
+        
+        # Get new permutation based on current soft total strategy matrix
+        generated_value = test_player.soft_total_strategy.generate_next_permutation(current_matrix=test_player.soft_total_strategy.get_strategy_matrix())
+        self.assertEqual(generated_value.all(), next_permutation.all())
+        
+        # Test complete transition
+        pre_transition_matrix = np.array([
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #21
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #20
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #19
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #18
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #17
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #16
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #15
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #14
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #13
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #12
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #11
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #10
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #9
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #8
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #7
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #6
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #5
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #4
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #3
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7]  #2
+        ], dtype= int)
+        
+        post_transition_matrix = SoftTotalStrategy.generate_next_permutation(pre_transition_matrix)
+        self.assertEqual(post_transition_matrix.all(), np.zeros(shape=(20,10), dtype=int).all())
+
+class TestHardTotalPermutations(unittest.TestCase):
+    
+    def test_next_permutations(self):
+        test_player = PerfectStrategist(player_name="test_player")
+        next_permutation = np.array([
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #21
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #20
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #19
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #18
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], #17
+            [0, 0, 0, 0, 0, 1, 1, 1, 1, 1], #16
+            [0, 0, 0, 0, 0, 1, 1, 1, 1, 1], #15
+            [0, 0, 0, 0, 0, 1, 1, 1, 1, 1], #14
+            [0, 0, 0, 0, 0, 1, 1, 1, 1, 1], #13
+            [1, 1, 0, 0, 0, 1, 1, 1, 1, 1], #12
+            [2, 2, 2, 2, 2, 2, 2, 2, 2, 2], #11
+            [2, 2, 2, 2, 2, 2, 2, 2, 0, 0], #10
+            [0, 2, 2, 2, 2, 0, 0, 0, 0, 0], #9
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], #8
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], #7
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], #6
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], #5
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 2]  #4
+        ], dtype= int)
+        
+        # Get new permutation based on current soft total strategy matrix
+        generated_value = test_player.hard_total_strategy.generate_next_permutation(current_matrix=test_player.soft_total_strategy.get_strategy_matrix())
+        self.assertEqual(generated_value.all(), next_permutation.all())
+        
+        # Test complete transition
+        pre_transition_matrix = np.array([
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #21
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #20
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #19
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #18
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #17
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #16
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #15
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #14
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #13
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #12
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #11
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #10
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #9
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #8
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #7
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #6
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7], #5
+            [7, 7, 7, 7, 7, 7, 7, 7, 7, 7]  #4
+        ], dtype= int)
+        
+        post_transition_matrix = HardTotalStrategy.generate_next_permutation(pre_transition_matrix)
+        self.assertEqual(post_transition_matrix.all(), np.zeros(shape=(18,10), dtype=int).all())

@@ -5,22 +5,27 @@ from blackjack.game_objects.card import Card
 from blackjack.strategy_manager.strategy_matrixes.hard_totals import HardTotalStrategy
 from blackjack.strategy_manager.strategy_matrixes.soft_totals import SoftTotalStrategy
 from blackjack.strategy_manager.strategy_matrixes.split_pairs import SplitPairStrategy
-import blackjack.players.bots.perfect_strategist.strategy_matrixes as strategy_matrixes
+
 
 from typing import List
 
-class PerfectStrategist(Player):
+class Strategist(Player):
     """
-    The PerfectStrategist bot follows an extended version of the strategy that is derived from
-    basic strategy charts.
-    The perfect strategist never accepts insurance when offered.
+    Strategist bots follow all instructions based on their provided strategy matrixes. 
+    Strategists always bet same amount of chips.
     
+    Strategies:
+    - When to hit
+    - When to stand
+    - When to double down
+    - When to split
+    - When to take insurance
     """
-    def __init__(self, player_name: str = "Perfect Strategist", custom_starting_hands: List[Hand] = None, custom_starting_chips: int = None, custom_initial_bet_amount: int = None):
+    def __init__(self, player_name: str, custom_starting_hands: List[Hand] = None, custom_starting_chips: int = None, custom_initial_bet_amount: int = None):
         super().__init__(player_name=player_name ,custom_starting_hands=custom_starting_hands , custom_starting_chips=custom_starting_chips, custom_initial_bet_amount=custom_initial_bet_amount)
-        self.hard_total_strategy = HardTotalStrategy(starting_matrix=strategy_matrixes.hard_totals)
-        self.soft_total_strategy = SoftTotalStrategy(starting_matrix=strategy_matrixes.soft_totals)
-        self.split_pair_strategy = SplitPairStrategy(starting_matrix=strategy_matrixes.split_pairs)
+        self.hard_total_strategy = HardTotalStrategy()
+        self.soft_total_strategy = SoftTotalStrategy()
+        self.split_pair_strategy = SplitPairStrategy()
         
         
     def request_split_pair(self, dealer_upcard: Card, hand: Hand) -> bool:

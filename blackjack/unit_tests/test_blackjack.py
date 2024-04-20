@@ -179,8 +179,19 @@ class test_deck_creation(unittest.TestCase):
         self.assertTrue(queen_of_diamonds_matched)
         self.assertTrue(five_of_clubs_matched)
 
-class test_player(unittest.TestCase):
-    pass
+class TestGame(unittest.TestCase):
+    
+    def test_table_deck_capacity_deck(self):
+        
+        game = Game()
+        # Reduce table deck capacity to an mount below allowed percentage
+        game.table_deck = Deck.full_deck()
+        # Perform initial state check
+        self.assertEqual(len(game.table_deck), 52) # Should equal amount of two full decks
+        # Perform test
+        game.perform_table_deck_capacity_check()
+        # Check that deck of cards has been successfully added to table deck
+        self.assertEqual(len(game.table_deck), 104) # Should equal amount of two full decks
 
 class test_round(unittest.TestCase):
     

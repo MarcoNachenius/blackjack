@@ -101,56 +101,26 @@ class Player(ABC):
         self.chips += amount
     
     
-    def total_round_bet_amount(self) -> int:
-        """
-        Returns the total number of chips that the player
-        has bet for the current round. 
-        
-        Takes into account:
-            - Insurance
-            - Double downs
-        """
-    
     # ABSTRACT METHODS
     @classmethod
     def request_split_pair(self, dealer_upcard: Card, hand: Hand) -> bool:
-        """
-        Requests if a player wants to split pair after first card of dealer is shown.\n
-        Returns True if the player has decided to split hand. \n
-        Removes the second card from the player hand and places it into the players' split hand
-        """
         pass
     
     @classmethod
     def request_bet_amount(self) -> int:
-        """
-        Returns the amount of chips that a player would like to bet\n
-        If a player sends invalid bet amount, it will be excluded from round participation
-        
-        If amount of 0 is returned, player will be rejected from active players list
-        """
         pass
     
     @classmethod
     def request_hit(self, dealer_upcard: Card, hand: Hand) -> bool:
-        """
-        Returns True if a player wants dealer to add card to hand
-        """
+        pass
     
     @classmethod
     def request_double_down(self, dealer_upcard: Card, hand: Hand) -> bool:
-        """
-        Returns True if player decides to double down a hand
-        """
+        pass
     
     @classmethod
-    def request_insurance(self) -> bool:
-        """
-        Player only receives insurance request it possess enough chips
-        
-        Player may choose money amount, provided it falls within insurance
-        limit (usually 50% of bet).
-        """
+    def request_insurance(self, dealer_upcard: Card, hand: Hand) -> bool:
+        pass
     
     # Getters and setters
     # Assuming the class has these attributes: player_name, hands, chips, initial_bet_amount, total_bet_amount, is_insured

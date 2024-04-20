@@ -42,7 +42,7 @@ class Round(object):
                 if hand.max_non_bust_score() != 0:
                     dealer.award_win(hand=hand, player=player)
     
-    def send_bet_requests(self, all_players: List[Player], dealer: Dealer):
+    def send_bet_requests(self, all_players: List[Player], dealer: Dealer, print_log: bool =False):
         """
         Populates self.participating_players list.
         If  player is added to list, it means that initial bet has\n
@@ -52,18 +52,18 @@ class Round(object):
         - Player has more than 0 chips\n
         """
         for player in all_players:
-            print(f'Taking bet from {player.get_player_name()}')
+            if print_log:
+                print(f'Taking bet from {player.get_player_name()}')
             # Check player balance
             if not player.has_enough_to_bet():
-                print(f"Bet request rejected: Insufficient funds\n")
+                #self.set_participating_players(self.get_participating_players().remove(player))
                 continue
             # Get bet amount from player
             bet_amount = player.request_bet_amount()
             if bet_amount < constants.MIN_BET_AMOUNT:
-                print(f"Bet request rejected: Falls below minimum bet amount\n")
+                #self.set_participating_players(self.get_participating_players().remove(player))
                 continue
             if bet_amount > player.get_chips():
-                print(f"Bet request rejected: Insufficient funds\n")
                 continue
             # Assumes player has placed valid bet amount
             player.hands[0].set_active(True)
@@ -104,7 +104,7 @@ class Round(object):
             dealer.double_down_player_hand(player_hand=hand, player=player, table_deck=table_deck)
         return
     
-    def award_wins_comparatively(self, dealer: Dealer):
+    def award_wins_comparatively(self, dealer: Dealer, print_results: bool = False):
         for player in self.get_participating_players():
             for hand in player.get_hands():
                 # Check for natural blackjack
@@ -113,8 +113,9 @@ class Round(object):
                     continue
                 # Check for bust
                 if hand.max_non_bust_score() == 0:
-                    print("BUST LOSS\n")
-                    print(f'{player.get_player_name()} has lost {hand.current_bet_amount()} chips')
+                    if print_results:
+                        print("BUST LOSS\n")
+                        print(f'{player.get_player_name()} has lost {hand.current_bet_amount()} chips')
                     continue
                 # Check for same score as dealer
                 if hand.max_non_bust_score() == dealer.hand.max_non_bust_score():
@@ -124,8 +125,9 @@ class Round(object):
                 if hand.max_non_bust_score() > dealer.hand.max_non_bust_score():
                     dealer.award_win(hand=hand, player=player)
                     continue
-                print("AWARDED LOSS\n")
-                print(f'{player.get_player_name()} has lost bet of {hand.current_bet_amount()} chips')
+                if print_results:
+                    print("AWARDED LOSS\n")
+                    print(f'{player.get_player_name()} has lost bet of {hand.current_bet_amount()} chips')
                 hand.set_final_outcome("LOSS")
         return
     
@@ -139,7 +141,7 @@ class Round(object):
         """
         for player in self.participating_players:
             # Send insurance requests
-            if player.is_able_to_insure() and player.request_insurance():
+            if player.is_able_to_insure() and player.request_insurance(hand=player.get_hands()[0], dealer_upcard=dealer.get_hand().get_cards()[0]):
                 dealer.insure_player(player=player)
     
     def conclude_insurance_round(self, dealer: Dealer):
