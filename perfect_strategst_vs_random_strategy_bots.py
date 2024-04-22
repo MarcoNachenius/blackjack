@@ -51,8 +51,8 @@ if __name__ == "__main__":
                 # Check for winner
                 if len(game.current_round.get_participating_players()) == 1:
                     premature_game_winner = game.current_round.get_participating_players()[0]
-                    print(f'    Game successfully completed!')
-                    print(f'    {premature_game_winner.get_player_name()} has won the game')
+                    #print(f'    Game successfully completed!')
+                    #print(f'    {premature_game_winner.get_player_name()} has won the game')
                     if premature_game_winner.get_player_name() == "Perfect Strategist":
                         games_won_by_perfect_strategist += 1
                     else:
@@ -70,9 +70,9 @@ if __name__ == "__main__":
                     games_won_by_random_strategist += 1
                 
                 
-            if premature_game_winner is not None:
-                print(f'    Game successfully completed!')
-            print(f'    Rounds played: {rounds_played}\n')
+            #if premature_game_winner is not None:
+            #    print(f'    Game successfully completed!')
+            #print(f'    Rounds played: {rounds_played}\n')
             rounds_played = 0
         # Print results every 5 times
         if total_simulations == 1 or total_simulations % refresh_rate == 0:
