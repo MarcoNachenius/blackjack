@@ -1,10 +1,7 @@
 """
-This program tests randomly generated bots against the PerfectStrategist bot. 
+This program tests random bot strategies against the PerfectStrategist.
 
-Rules
-- Every player has the same number of chips at the start of every game
-- The first player to win a certain number of games is the winner
-- A game is won when one of the players goes broke, or when one of the players has the most chips within a maximum number of rounds.
+If it is kept running, it will only stop once a strategy has been found that beat that of the PerfectStrategist
 """
 import os
 
@@ -16,6 +13,9 @@ from blackjack.players.bots.bot_builder import BotBuilder
 
 
 if __name__ == "__main__":
+    
+    # Generate bot with random strategy matrixes
+    random_bot = BotBuilder.return_random_player()
     
     # PRINT VALUES
     refresh_rate = 10# Game results are printed after specified amount of simulations
@@ -30,19 +30,23 @@ if __name__ == "__main__":
     total_simulations = 0
     
     players_that_beat_perfect_strategist = 0
+    
+    
     while True:
         games_won_by_perfect_strategist = 0
         games_won_by_random_strategist = 0
-
+        # Increase simulation number
         total_simulations += 1
         while games_won_by_perfect_strategist < best_out_of and  games_won_by_random_strategist < best_out_of:
             # Create game and player objects
-            random_strategist = BotBuilder.return_random_player()
+            random_strategist = BotBuilder.return_next_permutation_player(random_bot)
+            random_bot = random_strategist
             perfect_strategist = PerfectStrategist()
             game = Game([random_strategist, perfect_strategist])
             # Increase total number of games
             total_games += 1
             premature_game_winner = None # If game ends before max number of round, a winner will be placed here
+            
             while rounds_played != max_number_of_rounds:
                 # Start new round
                 game.start_new_round()
@@ -52,6 +56,8 @@ if __name__ == "__main__":
                 # Check for winner
                 if len(game.current_round.get_participating_players()) == 1:
                     premature_game_winner = game.current_round.get_participating_players()[0]
+                    #print(f'    Game successfully completed!')
+                    #print(f'    {premature_game_winner.get_player_name()} has won the game')
                     if premature_game_winner.get_player_name() == "Perfect Strategist":
                         games_won_by_perfect_strategist += 1
                     else:
@@ -69,9 +75,6 @@ if __name__ == "__main__":
                     games_won_by_random_strategist += 1
                 
                 
-            #if premature_game_winner is not None:
-            #    print(f'    Game successfully completed!')
-            #print(f'    Rounds played: {rounds_played}\n')
             rounds_played = 0
         # Print results every 5 times
         if total_simulations == 1 or total_simulations % refresh_rate == 0:
