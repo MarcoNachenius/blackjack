@@ -8,6 +8,7 @@ import os
 from blackjack.game_objects.game import Game
 from blackjack.players.bots.perfect_strategist.perfect_strategist import PerfectStrategist
 from blackjack.players.bots.bot_builder import BotBuilder
+from blackjack.players.bots.strategist_abc import Strategist
 
 
 
@@ -15,7 +16,7 @@ from blackjack.players.bots.bot_builder import BotBuilder
 if __name__ == "__main__":
     
     # Generate bot with random strategy matrixes
-    random_bot = BotBuilder.return_random_player()
+    random_bot = Strategist(player_name="Random Strategist")
     
     # PRINT VALUES
     refresh_rate = 1# Game results are printed after specified amount of simulations
@@ -86,11 +87,11 @@ if __name__ == "__main__":
         # Print results every 5 times
         if total_simulations == 1 or total_simulations % refresh_rate == 0:
             os.system('cls')
-            print("***************************************************")
-            print("PERFECT STRATEGIST VS RANDOM PERMUTATIONAL MATRIXES")
-            print("***************************************************\n")
+            print("************************************************************")
+            print("PERFECT STRATEGIST VS EVERY POSSIBLE STRATEGY")
+            print("************************************************************\n")
             print(f'RESULTS FOR SIMULATION {total_simulations}')
-            print("=====================================================================")
+            print("=================================")
             print("Player scores:")
             print(f'    Perfect Strategist: {games_won_by_perfect_strategist}')
             print(f'    Random Strategist: {games_won_by_random_strategist}\n')
@@ -103,15 +104,15 @@ if __name__ == "__main__":
                     print(f'{last_st_matrix[i]}   {last_ht_matrix[i]}')
                     continue
                 print(f'{last_st_matrix[i]}')
-            print("=====================================================================\n")
+            print("=================================\n")
             print("PROGRESS REPORT")
-            print("=====================================================================")
+            print("=================================")
             print(f'Total rounds: {total_rounds}')
             print(f'Total games: {total_games}')
             print(f'Total simulations: {total_simulations}')
             print(f'Superior strategists found: {players_that_beat_perfect_strategist}')
             print(f'Worthy competitors found: {worthy_competitors}')
-            print("=====================================================================")
+            print("=================================")
             
         
         
@@ -122,14 +123,14 @@ if __name__ == "__main__":
         
             print("SUPERIOR STRATEGIST FOUND")
             with open('./superior_matrixes/matrixes_that_beat_the_goat.txt', 'a') as file:
-                file.write('======================================================================\n')
+                file.write('==================================\n')
                 file.write('HARD TOTALS:\n')
                 file.write(f'{better_player.hard_total_strategy.get_strategy_matrix()}\n')
                 file.write('SOFT TOTALS:\n')
                 file.write(f'{better_player.soft_total_strategy.get_strategy_matrix()}\n')
                 file.write('SPLIT PAIRS:\n')
                 file.write(f'{better_player.split_pair_strategy.get_strategy_matrix()}\n')
-                file.write('======================================================================\n\n\n')
+                file.write('==================================\n\n\n')
         
         # Add results to txt file if player beats perfect strategist
         if games_won_by_random_strategist == (best_out_of - 1):
@@ -140,11 +141,11 @@ if __name__ == "__main__":
             with open('./superior_matrixes/narrow_defeats.txt', 'a') as file:
                 file.write(f'    Perfect Strategist: {games_won_by_perfect_strategist}')
                 file.write(f'    Random Strategist: {games_won_by_random_strategist}\n')
-                file.write('======================================================================\n')
+                file.write('==================================\n')
                 file.write('HARD TOTALS:\n')
                 file.write(f'{better_player.hard_total_strategy.get_strategy_matrix()}\n')
                 file.write('SOFT TOTALS:\n')
                 file.write(f'{better_player.soft_total_strategy.get_strategy_matrix()}\n')
                 file.write('SPLIT PAIRS:\n')
                 file.write(f'{better_player.split_pair_strategy.get_strategy_matrix()}\n')
-                file.write('======================================================================\n\n\n')
+                file.write('==================================\n\n\n')
