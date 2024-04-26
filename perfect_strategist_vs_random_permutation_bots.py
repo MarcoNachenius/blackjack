@@ -1,7 +1,10 @@
 """
 This program tests random bot strategies against the PerfectStrategist.
 
-If it is kept running, it will only stop once a strategy has been found that beat that of the PerfectStrategist
+Rules
+- Every player has the same number of chips at the start of every game
+- The first player to win a certain number of games is the winner
+- A game is won when one of the players goes broke, or when one of the players has the most chips within a maximum number of rounds.
 """
 import os
 
@@ -85,10 +88,10 @@ if __name__ == "__main__":
             rounds_played = 0
         # Print results every 5 times
         if total_simulations == 1 or total_simulations % refresh_rate == 0:
-            os.system('cls')
-            print("***************************************************")
-            print("PERFECT STRATEGIST VS RANDOM PERMUTATIONAL MATRIXES")
-            print("***************************************************\n")
+            os.system('clear')
+            print("*********************************************************************")
+            print("         PERFECT STRATEGIST VS RANDOM BOTS")
+            print("*********************************************************************\n")
             print(f'RESULTS FOR SIMULATION {total_simulations}')
             print("=====================================================================")
             print("Player scores:")
