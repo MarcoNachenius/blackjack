@@ -17,7 +17,8 @@ from blackjack.players.bots.strategist_abc import Strategist
 
 
 if __name__ == "__main__":
-    
+    with open('./superior_matrixes/container_logs.txt', 'a') as file:
+                file.write("ps vs every strategy bot container added")
     # Generate bot with random strategy matrixes
     random_bot = Strategist(player_name="Random Strategist")
     
