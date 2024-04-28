@@ -17,7 +17,7 @@ from blackjack.players.bots.bot_builder import BotBuilder
 
 if __name__ == "__main__":
     with open('./superior_matrixes/container_logs.txt', 'a') as file:
-                file.write("ps vs random permutational strategy bots container added")
+                file.write("ps vs random permutational strategy bots container added\n")
     # Generate bot with random strategy matrixes
     random_bot = BotBuilder.return_random_player()
     
