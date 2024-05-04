@@ -16,7 +16,7 @@ from blackjack.players.bots.bot_builder import BotBuilder
 
 
 if __name__ == "__main__":
-    with open('./superior_matrixes/container_logs.txt', 'a') as file:
+    with open('./shared_files/container_logs.txt', 'a') as file:
                 file.write("ps vs random strategy bots container added\n")
     # PRINT VALUES
     refresh_rate = 1# Game results are printed after specified amount of simulations
@@ -114,7 +114,7 @@ if __name__ == "__main__":
             better_player = random_strategist
         
             print("SUPERIOR STRATEGIST FOUND")
-            with open('./superior_matrixes/matrixes_that_beat_the_goat.txt', 'a') as file:
+            with open('./shared_files/matrixes_that_beat_the_goat.txt', 'a') as file:
                 file.write('======================================================================\n')
                 file.write('HARD TOTALS:\n')
                 file.write(f'{better_player.hard_total_strategy.get_strategy_matrix()}\n')
@@ -130,7 +130,7 @@ if __name__ == "__main__":
             better_player = random_strategist
         
             print("SUPERIOR STRATEGIST FOUND")
-            with open('./superior_matrixes/narrow_defeats.txt', 'a') as file:
+            with open('./shared_files/narrow_defeats.txt', 'a') as file:
                 file.write(f'    Perfect Strategist: {games_won_by_perfect_strategist}')
                 file.write(f'    Random Strategist: {games_won_by_random_strategist}\n')
                 file.write('======================================================================\n')

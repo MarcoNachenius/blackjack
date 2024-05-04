@@ -1,9 +1,11 @@
 import unittest
-from blackjack.database_manager.db_builder import DatabaseBuilder
+from blackjack.database_manager.gameplay_database.db_builder import DatabaseBuilder
+from blackjack.database_manager.strategy_database.strategy_db_builder import StrategyDbBuilder
+import os
 
-class test_database_creation(unittest.TestCase):
+class TestGameplayDbCreation(unittest.TestCase):
     
-    def test_database_creation(self):
+    def test_gameplay_database_creation(self):
         database = DatabaseBuilder(db_name='test_database.db')
         database.create_database()
         amount_of_rows = 5
@@ -24,5 +26,13 @@ class test_database_creation(unittest.TestCase):
 
         database.connection.close()
         database.delete_database()
+
+
+class TestSimulationDbCreation(unittest.TestCase):
+    
+    def test_strategy_database_creation(self):
+        StrategyDbBuilder.create_empty_database('test_database.db')
+        self.assertTrue(os.path.isfile('test_database.db'))
+        os.remove('test_database.db')
     
     
