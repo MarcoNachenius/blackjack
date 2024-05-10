@@ -98,7 +98,7 @@ class StrategyDbSetters(object):
         connection  = sqlite3.Connection(db_path)
         cursor = connection.cursor()
         for i in range(10):
-            sql_command ='''INSERT INTO SoftTotals(PlayerScore, Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, TenPointCard)
+            sql_command ='''INSERT INTO SplitPairs(PlayerScore, Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, TenPointCard)
                             VALUES(?,?,?,?,?,?,?,?,?,?,?)'''
             row_values = split_pair_matrix[i]
             cursor.execute(sql_command, (cls.SPLIT_PAIR_MATRIX_INDEX_NUMBER_TO_PLAYER_SCORE[i], int(row_values[0]), int(row_values[1]), int(row_values[2]), int(row_values[3]), int(row_values[4]), int(row_values[5]), int(row_values[6]), int(row_values[7]), int(row_values[8]), int(row_values[9])))
