@@ -4,3 +4,4 @@ __pycache__
 blackjack.db
 spg.db
 simtests.py
+container_logs.txt

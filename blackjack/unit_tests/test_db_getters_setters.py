@@ -96,4 +96,13 @@ class TestStrategyDatabase(unittest.TestCase):
         self.assertEqual(StrategyDbGetters.get_split_pair_matrix(db_path).all(), perfect_strategist.split_pair_strategy.get_strategy_matrix().all())
         os.remove(db_path)
         
-        
+    
+    def test_get_player_from_database(self):
+        db_path = 'test.db'
+        StrategyDbBuilder.create_perfect_strategist_database(db_path)
+        perfect_strategist = PerfectStrategist()
+        retrieved_player = StrategyDbGetters.get_player_from_database(db_path)
+        self.assertEqual(perfect_strategist.hard_total_strategy.get_strategy_matrix().all(), retrieved_player.hard_total_strategy.get_strategy_matrix().all())
+        self.assertEqual(perfect_strategist.soft_total_strategy.get_strategy_matrix().all(), retrieved_player.soft_total_strategy.get_strategy_matrix().all())
+        self.assertEqual(perfect_strategist.split_pair_strategy.get_strategy_matrix().all(), retrieved_player.split_pair_strategy.get_strategy_matrix().all())
+        os.remove(db_path)

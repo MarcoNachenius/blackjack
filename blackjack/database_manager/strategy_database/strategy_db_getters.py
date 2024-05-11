@@ -1,9 +1,6 @@
 import sqlite3
 import numpy as np
-
-from strategy_manager.strategy_matrixes.hard_totals import HardTotalStrategy
-from strategy_manager.strategy_matrixes.soft_totals import SoftTotalStrategy
-from strategy_manager.strategy_matrixes.split_pairs import SplitPairStrategy
+from blackjack.players.bots.strategist_abc import Strategist
 
 class StrategyDbGetters(object):
     """
@@ -58,3 +55,13 @@ class StrategyDbGetters(object):
                 split_pair_matrix[row_number][column_number] = table_values[row_number][column_number + 1]
         return split_pair_matrix
     
+    @classmethod
+    def get_player_from_database(cls, db_path: str) -> Strategist:
+        """
+        Returns a bot with strategy matrixes that are fetched from a strategy database.
+        """
+        player = Strategist("Retrieved Player")
+        player.hard_total_strategy.set_strategy_matrix(StrategyDbGetters.get_hard_total_matrix(db_path))
+        player.soft_total_strategy.set_strategy_matrix(StrategyDbGetters.get_soft_total_matrix(db_path))
+        player.split_pair_strategy.set_strategy_matrix(StrategyDbGetters.get_split_pair_matrix(db_path))
+        return player
