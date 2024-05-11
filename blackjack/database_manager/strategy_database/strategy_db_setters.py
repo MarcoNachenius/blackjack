@@ -104,3 +104,42 @@ class StrategyDbSetters(object):
             cursor.execute(sql_command, (cls.SPLIT_PAIR_MATRIX_INDEX_NUMBER_TO_PLAYER_SCORE[i], int(row_values[0]), int(row_values[1]), int(row_values[2]), int(row_values[3]), int(row_values[4]), int(row_values[5]), int(row_values[6]), int(row_values[7]), int(row_values[8]), int(row_values[9])))
             cursor.connection.commit()
         connection.close()
+    
+    @classmethod
+    def replace_hard_totals_table(cls, db_path: str, hard_total_matrix: np.ndarray):
+        """
+        Replaces all values in the HardTotals table with a those of a provided hard totals matrix.
+        """
+        connection  = sqlite3.Connection(db_path)
+        cursor = connection.cursor()
+        sql_command = '''DELETE FROM HardTotals'''
+        cursor.execute(sql_command)
+        cursor.connection.commit()
+        connection.close()
+        cls.insert_matrix_into_empty_hard_totals_table(db_path=db_path, hard_total_matrix=hard_total_matrix)
+    
+    @classmethod
+    def replace_soft_totals_table(cls, db_path: str, soft_total_matrix: np.ndarray):
+        """
+        Replaces all values in the SoftTotals table with a those of a provided hard totals matrix.
+        """
+        connection  = sqlite3.Connection(db_path)
+        cursor = connection.cursor()
+        sql_command = '''DELETE FROM SoftTotals'''
+        cursor.execute(sql_command)
+        cursor.connection.commit()
+        connection.close()
+        cls.insert_matrix_into_empty_soft_totals_table(db_path=db_path, soft_total_matrix=soft_total_matrix)
+    
+    @classmethod
+    def replace_split_pairs_table(cls, db_path: str, split_pair_matrix: np.ndarray):
+        """
+        Replaces all values in the SplitTotals table with a those of a provided hard totals matrix.
+        """
+        connection  = sqlite3.Connection(db_path)
+        cursor = connection.cursor()
+        sql_command = '''DELETE FROM SplitPairs'''
+        cursor.execute(sql_command)
+        cursor.connection.commit()
+        connection.close()
+        cls.insert_matrix_into_empty_split_pairs_table(db_path=db_path, split_pair_matrix=split_pair_matrix)

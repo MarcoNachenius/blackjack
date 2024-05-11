@@ -1,6 +1,9 @@
 import unittest
 import os
 
+# BOTS
+from blackjack.players.bots.perfect_strategist.perfect_strategist import PerfectStrategist
+from blackjack.players.bots.strategist_abc import Strategist
 # PS MATRIXES
 import players.bots.perfect_strategist.strategy_matrixes as ps_strategy_matrixes
 # GAMEPLAY DATABASE
@@ -37,6 +40,7 @@ class TestStrategyDatabase(unittest.TestCase):
         
         db_path = 'test.db'
         StrategyDbBuilder.create_empty_database(db_path)
+        
         # Insert values into tables
         StrategyDbSetters.insert_matrix_into_empty_hard_totals_table(db_path=db_path, hard_total_matrix=ps_strategy_matrixes.hard_totals)
         StrategyDbSetters.insert_matrix_into_empty_soft_totals_table(db_path=db_path, soft_total_matrix=ps_strategy_matrixes.soft_totals)
@@ -46,4 +50,50 @@ class TestStrategyDatabase(unittest.TestCase):
         self.assertEqual(StrategyDbGetters.get_soft_total_matrix(db_path=db_path).all(), ps_strategy_matrixes.soft_totals.all())
         self.assertEqual(StrategyDbGetters.get_split_pair_matrix(db_path=db_path).all(), ps_strategy_matrixes.split_pairs.all())
         os.remove(db_path)
+    
+    def test_replace_hard_totals_table_values(self):
+        
+        db_path = 'test.db'
+        StrategyDbBuilder.create_zeroes_database(db_path)
+        perfect_strategist = PerfectStrategist()
+        zeroes_bot = Strategist("Zeroes")
+        
+        # Confirm initial state
+        self.assertEqual(zeroes_bot.hard_total_strategy.get_strategy_matrix().all(), StrategyDbGetters.get_hard_total_matrix(db_path).all())
+        # Perform table value replacement
+        StrategyDbSetters.replace_hard_totals_table(db_path=db_path, hard_total_matrix=perfect_strategist.hard_total_strategy.get_strategy_matrix())
+        # Test successful change of values
+        self.assertEqual(StrategyDbGetters.get_hard_total_matrix(db_path).all(), perfect_strategist.hard_total_strategy.get_strategy_matrix().all())
+        os.remove(db_path)
+        
+    def test_replace_soft_totals_table_values(self):
+        
+        db_path = 'test.db'
+        StrategyDbBuilder.create_zeroes_database(db_path)
+        perfect_strategist = PerfectStrategist()
+        zeroes_bot = Strategist("Zeroes")
+        
+        # Confirm initial state
+        self.assertEqual(zeroes_bot.soft_total_strategy.get_strategy_matrix().all(), StrategyDbGetters.get_soft_total_matrix(db_path).all())
+        # Perform table value replacement
+        StrategyDbSetters.replace_soft_totals_table(db_path=db_path, soft_total_matrix=perfect_strategist.soft_total_strategy.get_strategy_matrix())
+        # Test successful change of values
+        self.assertEqual(StrategyDbGetters.get_soft_total_matrix(db_path).all(), perfect_strategist.soft_total_strategy.get_strategy_matrix().all())
+        os.remove(db_path)
+        
+    def test_replace_split_pairs_table_values(self):
+        
+        db_path = 'test.db'
+        StrategyDbBuilder.create_zeroes_database(db_path)
+        perfect_strategist = PerfectStrategist()
+        zeroes_bot = Strategist("Zeroes")
+        
+        # Confirm initial state
+        self.assertEqual(zeroes_bot.split_pair_strategy.get_strategy_matrix().all(), StrategyDbGetters.get_split_pair_matrix(db_path).all())
+        # Perform table value replacement
+        StrategyDbSetters.replace_split_pairs_table(db_path=db_path, split_pair_matrix=perfect_strategist.split_pair_strategy.get_strategy_matrix())
+        # Test successful change of values
+        self.assertEqual(StrategyDbGetters.get_split_pair_matrix(db_path).all(), perfect_strategist.split_pair_strategy.get_strategy_matrix().all())
+        os.remove(db_path)
+        
         

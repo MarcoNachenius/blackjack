@@ -25,7 +25,7 @@ ten_of_hearts = Card(rank="Ten", suit="Hearts", points=10)
 queen_of_diamonds = Card(rank="Queen", suit="Diamonds", points=10)
 
 
-class test_dealer(unittest.TestCase):
+class TestDealer(unittest.TestCase):
     
     def test_deal_card_object_retention(self):
         """
@@ -121,7 +121,7 @@ class test_dealer(unittest.TestCase):
     def test_double_down_hand(arg):
         pass
 
-class test_hand(unittest.TestCase):
+class TestHand(unittest.TestCase):
     
     def test_natural_blackjack(self):
         hand_with_natural_blackjack = Hand(starting_hand=[ace_of_hearts, ten_of_hearts])
@@ -146,12 +146,12 @@ class test_hand(unittest.TestCase):
         hand = Hand(starting_hand=[ace_of_spades, queen_of_diamonds])
         self.assertEqual(hand.full_names_list(), ["Ace of Spades", "Queen of Diamonds"])
         
-class test_card(unittest.TestCase):
+class TestCard(unittest.TestCase):
     
     def test_full_names(self):
         self.assertEqual("Ace of Spades", ace_of_spades.full_name())
 
-class test_deck_creation(unittest.TestCase):
+class TestDeckCreation(unittest.TestCase):
     
     def test_point_values(self):
         full_deck = Deck.full_deck()
@@ -193,7 +193,7 @@ class TestGame(unittest.TestCase):
         # Check that deck of cards has been successfully added to table deck
         self.assertEqual(len(game.table_deck), 104) # Should equal amount of two full decks
 
-class test_round(unittest.TestCase):
+class TestRound(unittest.TestCase):
     
     def test_send_bet_request(self):
         pass

@@ -76,7 +76,7 @@ if __name__ == "__main__":
                     games_won_by_random_strategist += 1
 
             rounds_played = 0
-       # Print results every 5 times
+        # Print results every 5 times
         if total_simulations == 1 or total_simulations % refresh_rate == 0:
             os.system('clear')
             print("*********************************************************************")
