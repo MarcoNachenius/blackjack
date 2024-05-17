@@ -34,7 +34,7 @@ def start_simulations():
 
     ## Rules
     - Every player has the same number of chips at the start of every game
-    - The first player to win a certain number of games is the winner
+    - The first player to win a 7 games is the winner
     - A game is won when one of the players goes broke, or when one of the players has the most chips within a maximum number of rounds.
     - If a game end in a draw where both players have the same amount of remaining chips, a win will be awarded to the competing player.
     '''
@@ -44,12 +44,13 @@ def start_simulations():
         StrategyDbBuilder.create_zeroes_database(db_path)
     
     # Create bot with initial strategy values from database
-    permutation_bot = Strategist(player_name="Permutation Bot")
+    permutation_bot = StrategyDbGetters.get_player_from_database(db_path)
     
     # PRINT VALUES
     refresh_rate = 1# Game results are printed after specified amount of simulations
+    database_update_rate = 100 
     # GAME VALUES
-    best_out_of = 7 # Amount of games should be odd number to avoid ties
+    best_out_of = 7 
     max_number_of_rounds = 200
     rounds_played = 0
     winner = None
@@ -114,6 +115,10 @@ def start_simulations():
                     games_won_by_next_permutation_bot += 1
                 
             rounds_played = 0
+        
+        if total_simulations == 1 or total_simulations % database_update_rate == 0:
+            StrategyDbSetters.replace_all_tables_with_bot_matrixes(db_path=db_path, bot=next_permutation_bot)
+        
         # Print results every 5 times
         if total_simulations == 1 or total_simulations % refresh_rate == 0:
             os.system('clear')

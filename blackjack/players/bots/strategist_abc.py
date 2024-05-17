@@ -103,7 +103,7 @@ class Strategist(Player):
         # Assumes action number instructs player do reject double down offer
         return False
     
-    def request_insurance(self, hand: Hand, dealer_upcard) -> bool:
+    def request_insurance(self, hand: Hand, dealer_upcard: Card) -> bool:
         """
         Action numbers:
         0 = Stand

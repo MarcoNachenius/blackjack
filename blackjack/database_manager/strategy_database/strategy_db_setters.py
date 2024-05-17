@@ -1,6 +1,7 @@
 import sqlite3
 import numpy as np
 
+from blackjack.players.bots.strategist_abc import Strategist
 
 class StrategyDbSetters(object):
     
@@ -143,3 +144,9 @@ class StrategyDbSetters(object):
         cursor.connection.commit()
         connection.close()
         cls.insert_matrix_into_empty_split_pairs_table(db_path=db_path, split_pair_matrix=split_pair_matrix)
+    
+    @classmethod
+    def replace_all_tables_with_bot_matrixes(cls, db_path: str, bot: Strategist):
+        cls.replace_hard_totals_table(db_path=db_path, hard_total_matrix=bot.hard_total_strategy.get_strategy_matrix())
+        cls.replace_soft_totals_table(db_path=db_path, soft_total_matrix=bot.soft_total_strategy.get_strategy_matrix())
+        cls.replace_split_pairs_table(db_path=db_path, split_pair_matrix=bot.split_pair_strategy.get_strategy_matrix())

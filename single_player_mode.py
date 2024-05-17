@@ -1,20 +1,20 @@
 from blackjack.game_objects.game import Game
 from blackjack.players.human import Human
 from blackjack.players.bots.perfect_strategist.perfect_strategist import PerfectStrategist
-from blackjack.database_manager.db_builder import DatabaseBuilder
-from blackjack.database_manager.db_setters import DatabaseSetters
+from blackjack.database_manager.gameplay_database.db_builder import DatabaseBuilder
+from blackjack.database_manager.gameplay_database.db_setters import DatabaseSetters
 
 if __name__ == "__main__":
     database = DatabaseBuilder()
     database.create_database()
     db_updater = DatabaseSetters()
-    all_players = [PerfectStrategist(player_name="Foo"), PerfectStrategist(player_name="Bar")]
+    all_players = [Human(player_name="human")]
     game = Game(all_players=all_players)
     
     
     # Create Players row
     for player in game.get_all_players():
-        database.insert_into_players(player_name=player.get_player_name(), balance=player.get_chips())
+        database.insert_into_players(balance=player.get_chips())
         player.set_player_id(database.get_last_id_players())
     # Create Games row
     database.insert_into_games()
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     play_another_round = "y"
     while play_another_round == "y":
         # Start new round
-        game.start_new_round()
+        game.start_new_round(print_game_log=True)
         # Create Rounds.DealerHandID db value
         database.insert_into_hand_history(hand_combo_id=0, is_doubled_down="False", outcome="DEALER HAND")
         # Set Dealer.hand_id
