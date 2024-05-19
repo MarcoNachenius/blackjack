@@ -113,8 +113,8 @@ class Game(object):
             if len(self.current_round.get_participating_players()) == 0:
                 print("UNUSUAL ROUND ENDING: ROUND ENDED DUE TO LACK OF PARTICIPATING PLAYERS")
                 return
-
             print("DEALING INITIAL HANDS")
+            
         # STEP 2 - Initial deal
         # 2.1 Dealer deals two cards for every player who has placed a bet
         # 2.2 Dealer deals two cards for themselves, one face-up and one face-down.

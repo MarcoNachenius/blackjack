@@ -58,19 +58,7 @@ class LbStrategy(object):
     
     def award_win(self, y_coordinate: int, x_coordinate: int, z_coordinate: int):
         '''
-        Awards a win by increasing trials by 1 and points by 2 at the specified coordinates in the strategy matrix.
-
-        Args:
-            y_coordinate (int): The player hand minimum score index number.
-            x_coordinate (int): The dealer upcard points index number.
-            z_coordinate (int): The action number index number.
-        '''
-        self._strategy_matrix[y_coordinate, x_coordinate, z_coordinate, 0] += 1
-        self._strategy_matrix[y_coordinate, x_coordinate, z_coordinate, 1] += 2
-
-    def award_draw(self, y_coordinate: int, x_coordinate: int, z_coordinate: int):
-        '''
-        Awards a draw by increasing trials by 1 and points by 1 at the specified coordinates in the strategy matrix.
+        Awards a win by increasing trials by 1 and points by 1 at the specified coordinates in the strategy matrix.
 
         Args:
             y_coordinate (int): The player hand minimum score index number.
@@ -79,8 +67,20 @@ class LbStrategy(object):
         '''
         self._strategy_matrix[y_coordinate, x_coordinate, z_coordinate, 0] += 1
         self._strategy_matrix[y_coordinate, x_coordinate, z_coordinate, 1] += 1
-    
+
     def award_loss(self, y_coordinate: int, x_coordinate: int, z_coordinate: int):
+        '''
+        Awards a loss by increasing trials by 1 and decrease points by 1 at the specified coordinates in the strategy matrix.
+
+        Args:
+            y_coordinate (int): The player hand minimum score index number.
+            x_coordinate (int): The dealer upcard points index number.
+            z_coordinate (int): The action number index number.
+        '''
+        self._strategy_matrix[y_coordinate, x_coordinate, z_coordinate, 0] += 1
+        self._strategy_matrix[y_coordinate, x_coordinate, z_coordinate, 1] -= 1
+    
+    def award_draw(self, y_coordinate: int, x_coordinate: int, z_coordinate: int):
         '''
         Awards a draw by increasing trials by 1 at the specified coordinates in the strategy matrix.
 

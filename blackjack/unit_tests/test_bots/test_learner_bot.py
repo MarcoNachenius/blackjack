@@ -1,6 +1,7 @@
 import unittest
 import numpy as np
 from blackjack.strategy_manager.learning_bot_matrixes.learning_bot_strategies import LbStrategy
+from blackjack.players.bots.learning_bot.learning_bot import LearningBot, LbRoundLog
 
 class TestStrategyMatrixes(unittest.TestCase):
 
@@ -75,8 +76,8 @@ class TestStrategyMatrixes(unittest.TestCase):
         # Assert the values are updated correctly
         self.assertEqual(self.matrix[y_coordinate, x_coordinate, z_coordinate, 0], initial_trials + 1,
                          f"Expected trials value {initial_trials + 1}, but got {self.matrix[y_coordinate, x_coordinate, z_coordinate, 0]}")
-        self.assertEqual(self.matrix[y_coordinate, x_coordinate, z_coordinate, 1], initial_points + 2,
-                         f"Expected points value {initial_points + 2}, but got {self.matrix[y_coordinate, x_coordinate, z_coordinate, 1]}")
+        self.assertEqual(self.matrix[y_coordinate, x_coordinate, z_coordinate, 1], initial_points + 1,
+                         f"Expected points value {initial_points + 1}, but got {self.matrix[y_coordinate, x_coordinate, z_coordinate, 1]}")
 
     def test_award_draw(self):
         # Test the award_draw method
@@ -94,8 +95,42 @@ class TestStrategyMatrixes(unittest.TestCase):
         # Assert the values are updated correctly
         self.assertEqual(self.matrix[y_coordinate, x_coordinate, z_coordinate, 0], initial_trials + 1,
                         f"Expected trials value {initial_trials + 1}, but got {self.matrix[y_coordinate, x_coordinate, z_coordinate, 0]}")
-        self.assertEqual(self.matrix[y_coordinate, x_coordinate, z_coordinate, 1], initial_points + 1,
+        self.assertEqual(self.matrix[y_coordinate, x_coordinate, z_coordinate, 1], initial_points,
                         f"Expected points value {initial_points + 1}, but got {self.matrix[y_coordinate, x_coordinate, z_coordinate, 1]}")
+    
+    def test_award_loss(self):
+        # Test the award_draw method
+        y_coordinate = 5
+        x_coordinate = 3
+        z_coordinate = 2
+
+        # Get initial values
+        initial_trials = self.matrix[y_coordinate, x_coordinate, z_coordinate, 0]
+        initial_points = self.matrix[y_coordinate, x_coordinate, z_coordinate, 1]
+
+        # Award a draw
+        self.strategy_matrix.award_loss(y_coordinate, x_coordinate, z_coordinate)
+
+        # Assert the values are updated correctly
+        self.assertEqual(self.matrix[y_coordinate, x_coordinate, z_coordinate, 0], initial_trials + 1,
+                        f"Expected trials value {initial_trials + 1}, but got {self.matrix[y_coordinate, x_coordinate, z_coordinate, 0]}")
+        self.assertEqual(self.matrix[y_coordinate, x_coordinate, z_coordinate, 1], initial_points -1,
+                        f"Expected points value {initial_points + 1}, but got {self.matrix[y_coordinate, x_coordinate, z_coordinate, 1]}")
+
+
+class TestLearningBot(unittest.TestCase):
+
+    def test_insert_log_into_lb_soft_total_memory_matrix(self):
+        # Arrange
+        learning_bot = LearningBot(player_name="TestBot")
+        log = LbRoundLog(player_score=15, dealer_upcard_points=10, action_number=1)
+        total_winnings = 100
+
+        # Act
+        learning_bot.insert_log_into_lb_soft_total_memory_matrix(log, total_winnings)
+
+        # Assert
+        #learning_bot.lb_split_pair_memory_matrix.award_win.assert_called_once_with(x_coordinate=0, y_coordinate=0, z_coordinate=1)
 
 if __name__ == '__main__':
     unittest.main()

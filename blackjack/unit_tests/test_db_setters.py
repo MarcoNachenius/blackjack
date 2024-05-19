@@ -2,7 +2,7 @@ import unittest
 from blackjack.database_manager.gameplay_database.db_builder import DatabaseBuilder
 from blackjack.database_manager.gameplay_database.db_setters import DatabaseSetters
 
-class test_database_updates(unittest.TestCase):
+class TestDatabaseUpdates(unittest.TestCase):
     """
     Tests all setters for existing database entries
     """

@@ -2,7 +2,7 @@ import unittest
 from blackjack.strategy_manager.strategy_matrixes.strategy_abc import StrategyMatrix
 import numpy as np
 
-class test_strategy_matrix(unittest.TestCase):
+class TestStrategyMatrix(unittest.TestCase):
     
     def test_get_and_set_strategy_matrix(self):
         matrix = np.array([[1, 2], [3, 4]])

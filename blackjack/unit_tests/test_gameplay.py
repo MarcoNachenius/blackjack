@@ -16,7 +16,7 @@ nine_of_spades = Card(rank="Nine", suit="Spades", points=9)
 ten_of_hearts = Card(rank="Ten", suit="Hearts", points=10)
 jack_of_spades = Card(rank="Jack", suit="Spades", points=10)
 queen_of_diamonds = Card(rank="Queen", suit="Diamonds", points=10)
-class test_play_new_round(unittest.TestCase):
+class TestPlayNewRound(unittest.TestCase):
     
     def test_deal_next_card(self):
         """
