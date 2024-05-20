@@ -58,7 +58,7 @@ class StrategyDbGetters(object):
     @classmethod
     def get_player_from_database(cls, db_path: str) -> Strategist:
         """
-        Returns a bot with strategy matrixes that are fetched from a strategy database.
+        Returns a bot with strategy matrixes that are fetched from strategy database tables.
         """
         player = Strategist("Retrieved Player")
         player.hard_total_strategy.set_strategy_matrix(StrategyDbGetters.get_hard_total_matrix(db_path))

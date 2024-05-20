@@ -335,3 +335,21 @@ class LearningBot(Strategist):
         # Update lb_split_pair_memory_matrix
         for log in self.lb_split_pair_round_logs:
             self.insert_log_into_lb_split_pair_memory_matrix(log=log, total_winnings=total_winnings)
+    
+    def clear_lb_hard_total_memory_matrix(self):
+        """
+        Resets all trials and points numbers to 0 inside self.lb_hard_total_memory_matrix
+        """
+        self.lb_hard_total_memory_matrix = LbStrategy(height = 18, depth = 8)
+    
+    def clear_lb_soft_total_memory_matrix(self):
+        """
+        Resets all trials and points numbers to 0 inside self.lb_soft_total_memory_matrix
+        """
+        self.lb_soft_total_memory_matrix = LbStrategy(height = 20, depth = 8)
+    
+    def clear_lb_split_pair_memory_matrix(self):
+        """
+        Resets all trials and points numbers to 0 inside self.lb_split_pair_memory_matrix
+        """
+        self.lb_split_pair_memory_matrix = LbStrategy(height = 10, depth = 2)
