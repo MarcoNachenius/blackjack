@@ -10,23 +10,28 @@ from blackjack.database_manager.lerner_bot_database.learner_bot_db_getters impor
 class LearningBotSimulation(object):
     
     HARD_AND_SOFT_TOTAL_ACTION_NUMBERS = [
-        "0 = Stand",
-        "1 = Hit",
+        "0 = Stand / Don't split pair",
+        "1 = Hit / Split pair",
         "2 = Double down, hit",
         "3 = Double down, stand",
         "4 = Buy insurance, hit",
         "5 = Buy insurance, stand",
         "6 = Buy insurance, double down, hit",
-        "7 = Buy insurance, double down, stand"
+        "7 = Buy insurance, double down, stand",
+        "",
+        ""
     ]
     
     DATABASE_UPDATE_RATE = 1000
+    HT_INDEX_TO_PS = LearningBotDbSetters.HARD_TOTAL_MATRIX_INDEX_NUMBER_TO_PLAYER_SCORE
+    ST_INDEX_TO_PS = LearningBotDbSetters.SOFT_TOTAL_MATRIX_INDEX_NUMBER_TO_PLAYER_SCORE
+    SP_INDEX_TO_PS = LearningBotDbSetters.SPLIT_PAIR_MATRIX_INDEX_NUMBER_TO_PLAYER_SCORE
+
     @classmethod
     def start_simulation(cls, db_path):
         # Create database if it does not exist
         if not os.path.isfile(db_path):
             LearningBotDbBuilder.create_learner_bot_database(db_path)
-            
         # Track number of rounds played
         total_rounds = 0
         while True:
@@ -68,19 +73,30 @@ class LearningBotSimulation(object):
                     ideal_soft_total_matrix = LearningBotDbGetters.get_ideal_soft_total_matrix(db_path)
                     ideal_hard_total_matrix = LearningBotDbGetters.get_ideal_hard_total_matrix(db_path)
                     ideal_split_pair_matrix = LearningBotDbGetters.get_ideal_split_pair_matrix(db_path)
-                    os.system('cls')
-                    print("                      BEST PERFORMING STRATEGIES")
-                    print("                      ==========================")
-                    print()
-                    print("  SOFT TOTAL MATRIX       HARD TOTAL MATRIX       SPLIT PAIR MATRIX'")
+                    print_statement = ""
+                    print_statement += ("                         ==========================                     \n")
+                    print_statement += ("                         BEST PERFORMING STRATEGIES                     \n")
+                    print_statement += ("                         ==========================                     \n")
+                    print_statement += ("                                                                        \n")
+                    print_statement += ("    SOFT TOTAL MATRIX         HARD TOTAL MATRIX         SPLIT PAIR MATRIX  \n")
+                    print_statement += ("                                                                     \n")
+                    print_statement += ("  |A|2|3|4|5|6|7|8|9|T|     |A|2|3|4|5|6|7|8|9|T|     |A|2|3|4|5|6|7|8|9|T|\n")
                     for i in range(20):
+                        if i < 18:
+                            ht_act_num = cls.HT_INDEX_TO_PS[i]
+                            ht_act_num = f" {str(ht_act_num)}" if ht_act_num < 10 else str(ht_act_num)
+                        st_act_num = cls.ST_INDEX_TO_PS[i]
+                        st_act_num = f" {str(st_act_num)}" if st_act_num < 10 else str(st_act_num)
                         if i < 10:
-                            print(f'{ideal_soft_total_matrix[i]}   {ideal_hard_total_matrix[i]}   {ideal_split_pair_matrix[i]}')
+                            sp_act_num = cls.SP_INDEX_TO_PS[i]
+                            sp_act_num = f" {str(sp_act_num)}" if sp_act_num < 10 else str(sp_act_num)
+                        if i < 10:
+                            print_statement += (f'{st_act_num}{ideal_soft_total_matrix[i]}   {ht_act_num}{ideal_hard_total_matrix[i]}   {sp_act_num}{ideal_split_pair_matrix[i]}       {cls.HARD_AND_SOFT_TOTAL_ACTION_NUMBERS[i]}\n')
                             continue
                         if i < 18:
-                            print(f'{ideal_soft_total_matrix[i]}   {ideal_hard_total_matrix[i]}')
+                            print_statement += (f'{st_act_num}{ideal_soft_total_matrix[i]}   {ht_act_num}{ideal_hard_total_matrix[i]}\n')
                             continue
-                        print(f'{ideal_soft_total_matrix[i]}')
+                        print_statement += (f'{st_act_num}{ideal_soft_total_matrix[i]}\n')
+                    os.system('clears')
+                    print(print_statement)
     
-if __name__ == "__main__":
-    LearningBotSimulation.start_simulation()
