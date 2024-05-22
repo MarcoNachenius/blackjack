@@ -97,6 +97,6 @@ class LearningBotSimulation(object):
                             print_statement += (f'{st_act_num}{ideal_soft_total_matrix[i]}   {ht_act_num}{ideal_hard_total_matrix[i]}\n')
                             continue
                         print_statement += (f'{st_act_num}{ideal_soft_total_matrix[i]}\n')
-                    os.system('clears')
+                    os.system('clear')
                     print(print_statement)
     
