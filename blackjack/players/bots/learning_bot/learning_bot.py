@@ -62,17 +62,17 @@ class LearningBot(Strategist):
         if hand.amount_of_aces() == 0:
             action_number = self.hard_total_strategy.get_action_number(dealer_upcard_points=dealer_upcard.points, player_hard_total=hand.lowest_score())
             round_strategy_logs = self.lb_hard_total_round_logs
-        # Assumes player has hand containing at least one ace
-        else: 
+        else: # Assumes player's hand contains an Ace
             action_number = self.soft_total_strategy.get_action_number(dealer_upcard_points=dealer_upcard.points, player_soft_total=hand.lowest_score())
             round_strategy_logs = self.lb_soft_total_round_logs
         
-        # Create log object
-        action_log = LbRoundLog(player_score=hand.lowest_score(), dealer_upcard_points=dealer_upcard.points, action_number=action_number)
-        
-        # Add log to list if it is not already inside of it
-        if not self.contains_round_log(round_strategy_logs=round_strategy_logs, log_to_be_checked=action_log):
-            round_strategy_logs.append(action_log)
+        # Create log object if dealer has ace (where all action numbers are applicable),
+        # or if action number does not contain insurance decisions
+        if dealer_upcard.points == 1  or action_number < 4:
+            action_log = LbRoundLog(player_score=hand.lowest_score(), dealer_upcard_points=dealer_upcard.points, action_number=action_number)
+            # Add log to list if it is not already inside of it
+            if not self.contains_round_log(round_strategy_logs=round_strategy_logs, log_to_be_checked=action_log):
+                round_strategy_logs.append(action_log)
         
         # Check for hit
         if action_number == 1:
@@ -82,11 +82,72 @@ class LearningBot(Strategist):
             return True
         # Check for insurance, hit
         if action_number == 4:
+            # Treat like action number 1(hit) if dealer upcard is not Ace
+            if dealer_upcard.points != 1:
+                # Create incremented action_number
+                new_action_number = (action_number + 1) % 8
+                # Increment action number
+                if hand.amount_of_aces() == 0:
+                    self.hard_total_strategy.set_action_number(dealer_upcard_points=dealer_upcard.points, player_hard_total= hand.lowest_score(), new_action_number=new_action_number)
+                else:
+                    self.soft_total_strategy.set_action_number(dealer_upcard_points=dealer_upcard.points, player_soft_total= hand.lowest_score(), new_action_number=new_action_number)
+                # Create log with adjusted action number
+                action_log = LbRoundLog(player_score=hand.lowest_score(), dealer_upcard_points=dealer_upcard.points, action_number= 1)
+                # Add log to list if it is not already inside of it
+                if not self.contains_round_log(round_strategy_logs=round_strategy_logs, log_to_be_checked=action_log):
+                    round_strategy_logs.append(action_log)
             return True
+        # Check for insurance, stand
+        if action_number == 5:
+            # Treat like action number 0(stand) if dealer upcard is not Ace
+            if dealer_upcard.points != 1:
+                # Create incremented action_number
+                new_action_number = (action_number + 1) % 8
+                # Increment action number
+                if hand.amount_of_aces() == 0:
+                    self.hard_total_strategy.set_action_number(dealer_upcard_points=dealer_upcard.points, player_hard_total= hand.lowest_score(), new_action_number=new_action_number)
+                else:
+                    self.soft_total_strategy.set_action_number(dealer_upcard_points=dealer_upcard.points, player_soft_total= hand.lowest_score(), new_action_number=new_action_number)
+                # Create log with adjusted action number
+                action_log = LbRoundLog(player_score=hand.lowest_score(), dealer_upcard_points=dealer_upcard.points, action_number= 0)
+                # Add log to list if it is not already inside of it
+                if not self.contains_round_log(round_strategy_logs=round_strategy_logs, log_to_be_checked=action_log):
+                    round_strategy_logs.append(action_log)
+            return False
         # Check for insurance, double down, hit
         if action_number == 6:
+            # Treat like action number 2(double down, hit) if dealer upcard is not Ace
+            if dealer_upcard.points != 1:
+                # Create incremented action_number
+                new_action_number = (action_number + 1) % 8
+                # Increment action number
+                if hand.amount_of_aces() == 0:
+                    self.hard_total_strategy.set_action_number(dealer_upcard_points=dealer_upcard.points, player_hard_total= hand.lowest_score(), new_action_number=new_action_number)
+                else:
+                    self.soft_total_strategy.set_action_number(dealer_upcard_points=dealer_upcard.points, player_soft_total= hand.lowest_score(), new_action_number=new_action_number)
+                # Create log with adjusted action number
+                action_log = LbRoundLog(player_score=hand.lowest_score(), dealer_upcard_points=dealer_upcard.points, action_number= 2)
+                # Add log to list if it is not already inside of it
+                if not self.contains_round_log(round_strategy_logs=round_strategy_logs, log_to_be_checked=action_log):
+                    round_strategy_logs.append(action_log)
             return True
-        # Assumes action number instructs player to stand
+        # Check for insurance, double down, stand
+        if action_number == 7:
+            # Treat like action number 3(double down, stand) if dealer upcard is not Ace
+            if dealer_upcard.points != 1:
+                # Create incremented action_number
+                new_action_number = (action_number + 1) % 8
+                # Increment action number
+                if hand.amount_of_aces() == 0:
+                    self.hard_total_strategy.set_action_number(dealer_upcard_points=dealer_upcard.points, player_hard_total= hand.lowest_score(), new_action_number=new_action_number)
+                else:
+                    self.soft_total_strategy.set_action_number(dealer_upcard_points=dealer_upcard.points, player_soft_total= hand.lowest_score(), new_action_number=new_action_number)
+                # Create log with adjusted action number
+                action_log = LbRoundLog(player_score=hand.lowest_score(), dealer_upcard_points=dealer_upcard.points, action_number= 3)
+                # Add log to list if it is not already inside of it
+                if not self.contains_round_log(round_strategy_logs=round_strategy_logs, log_to_be_checked=action_log):
+                    round_strategy_logs.append(action_log)
+            return False
         return False
     
     def request_double_down(self, dealer_upcard: Card, hand: Hand) -> bool:
@@ -105,27 +166,92 @@ class LearningBot(Strategist):
         if hand.amount_of_aces() == 0:
             action_number = self.hard_total_strategy.get_action_number(dealer_upcard_points=dealer_upcard.points, player_hard_total=hand.lowest_score())
             round_strategy_logs = self.lb_hard_total_round_logs
-        # Assumes player has hand containing at least one ace
-        else: 
+        else: # Assumes player's hand contains an Ace
             action_number = self.soft_total_strategy.get_action_number(dealer_upcard_points=dealer_upcard.points, player_soft_total=hand.lowest_score())
             round_strategy_logs = self.lb_soft_total_round_logs
         
-        # Create log object
-        action_log = LbRoundLog(player_score=hand.lowest_score(), dealer_upcard_points=dealer_upcard.points, action_number=action_number)
+        # Create log object if dealer has ace (where all action numbers are applicable),
+        # or if action number does not contain insurance decisions
+        if dealer_upcard.points == 1  or action_number < 4:
+            action_log = LbRoundLog(player_score=hand.lowest_score(), dealer_upcard_points=dealer_upcard.points, action_number=action_number)
+            # Add log to list if it is not already inside of it
+            if not self.contains_round_log(round_strategy_logs=round_strategy_logs, log_to_be_checked=action_log):
+                round_strategy_logs.append(action_log)
         
-        # Add log to list if it is not already inside of it
-        if not self.contains_round_log(round_strategy_logs=round_strategy_logs, log_to_be_checked=action_log):
-            round_strategy_logs.append(action_log)
         # Check double down, hit
         if action_number == 2:
             return True
         # Check double down, stand
         if action_number == 3:
             return True
-        # Check insurance, double down, stand
+        # Check for insurance, hit
+        if action_number == 4:
+            # Treat like action number 1(hit) if dealer upcard is not Ace
+            if dealer_upcard.points != 1:
+                # Create incremented action_number
+                new_action_number = (action_number + 1) % 8
+                # Increment action number
+                if hand.amount_of_aces() == 0:
+                    self.hard_total_strategy.set_action_number(dealer_upcard_points=dealer_upcard.points, player_hard_total= hand.lowest_score(), new_action_number=new_action_number)
+                else:
+                    self.soft_total_strategy.set_action_number(dealer_upcard_points=dealer_upcard.points, player_soft_total= hand.lowest_score(), new_action_number=new_action_number)
+                # Create log with adjusted action number
+                action_log = LbRoundLog(player_score=hand.lowest_score(), dealer_upcard_points=dealer_upcard.points, action_number= 1)
+                # Add log to list if it is not already inside of it
+                if not self.contains_round_log(round_strategy_logs=round_strategy_logs, log_to_be_checked=action_log):
+                    round_strategy_logs.append(action_log)
+            return False
+        # Check for insurance, stand
+        if action_number == 5:
+            # Treat like action number 0(stand) if dealer upcard is not Ace
+            if dealer_upcard.points != 1:
+                # Create incremented action_number
+                new_action_number = (action_number + 1) % 8
+                # Increment action number
+                if hand.amount_of_aces() == 0:
+                    self.hard_total_strategy.set_action_number(dealer_upcard_points=dealer_upcard.points, player_hard_total= hand.lowest_score(), new_action_number=new_action_number)
+                else:
+                    self.soft_total_strategy.set_action_number(dealer_upcard_points=dealer_upcard.points, player_soft_total= hand.lowest_score(), new_action_number=new_action_number)
+                # Create log with adjusted action number
+                action_log = LbRoundLog(player_score=hand.lowest_score(), dealer_upcard_points=dealer_upcard.points, action_number= 0)
+                # Add log to list if it is not already inside of it
+                if not self.contains_round_log(round_strategy_logs=round_strategy_logs, log_to_be_checked=action_log):
+                    round_strategy_logs.append(action_log)
+            return False
+        # Check for insurance, double down, hit
         if action_number == 6:
+            # Treat like action number 2(double down, hit) if dealer upcard is not Ace
+            if dealer_upcard.points != 1:
+                # Create incremented action_number
+                new_action_number = (action_number + 1) % 8
+                # Increment action number
+                if hand.amount_of_aces() == 0:
+                    self.hard_total_strategy.set_action_number(dealer_upcard_points=dealer_upcard.points, player_hard_total= hand.lowest_score(), new_action_number=new_action_number)
+                else:
+                    self.soft_total_strategy.set_action_number(dealer_upcard_points=dealer_upcard.points, player_soft_total= hand.lowest_score(), new_action_number=new_action_number)
+                # Create log with adjusted action number
+                action_log = LbRoundLog(player_score=hand.lowest_score(), dealer_upcard_points=dealer_upcard.points, action_number= 2)
+                # Add log to list if it is not already inside of it
+                if not self.contains_round_log(round_strategy_logs=round_strategy_logs, log_to_be_checked=action_log):
+                    round_strategy_logs.append(action_log)
             return True
-        # Assumes action number instructs player do reject double down offer
+        # Check for insurance, double down, stand
+        if action_number == 7:
+            # Treat like action number 3(double down, stand) if dealer upcard is not Ace
+            if dealer_upcard.points != 1:
+                # Create incremented action_number
+                new_action_number = (action_number + 1) % 8
+                # Increment action number
+                if hand.amount_of_aces() == 0:
+                    self.hard_total_strategy.set_action_number(dealer_upcard_points=dealer_upcard.points, player_hard_total= hand.lowest_score(), new_action_number=new_action_number)
+                else:
+                    self.soft_total_strategy.set_action_number(dealer_upcard_points=dealer_upcard.points, player_soft_total= hand.lowest_score(), new_action_number=new_action_number)
+                # Create log with adjusted action number
+                action_log = LbRoundLog(player_score=hand.lowest_score(), dealer_upcard_points=dealer_upcard.points, action_number= 3)
+                # Add log to list if it is not already inside of it
+                if not self.contains_round_log(round_strategy_logs=round_strategy_logs, log_to_be_checked=action_log):
+                    round_strategy_logs.append(action_log)
+            return True
         return False
     
     def request_insurance(self, hand: Hand, dealer_upcard: Card) -> bool:

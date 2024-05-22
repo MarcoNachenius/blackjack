@@ -9,9 +9,9 @@ class LearningBotDbBuilder(StrategyDbBuilder):
         '''
         ## Database tables
         The learning bot database has the following tables:
-        - HardTotals
-        - SoftTotals
-        - SplitPairs
+        - IdealHardTotalsStrategy
+        - IdealSoftTotalsStrategy
+        - IdealSplitPairsStrategy
         - HardTotalsMemory
         - SoftTotalsMemory
         - SplitPairsMemory
@@ -21,7 +21,7 @@ class LearningBotDbBuilder(StrategyDbBuilder):
         3 databases that track the use of every action number and the outcome of its use.
         
         
-        ### HardTotals, SoftTotals and SplitPairs tables
+        ### IdealHardTotalsStrategy, IdealSoftTotalsStrategy and IdealSplitPairsStrategy tables
         #### Description
         These three tables are representations of ideal strategy matrixes. When the database is created
         for the first time, all of the action numbers in these tables will be 0.
@@ -64,6 +64,18 @@ class LearningBotDbBuilder(StrategyDbBuilder):
         '''
         # Create populated HardTotals, SoftTotals and SplitPairs tables
         cls.create_zeroes_database(db_path)
+        # Rename HardTotals, SoftTotals and SplitPairs tables
+        connection = sqlite3.Connection(db_path)
+        cursor = connection.cursor()
+        # Rename HardTotals to IdealHardTotalsStrategy
+        cursor.execute('''ALTER TABLE HardTotals RENAME TO IdealHardTotalsStrategy''')
+        connection.commit()
+        # Rename SoftTotals to IdealSoftTotalsStrategy
+        cursor.execute('''ALTER TABLE SoftTotals RENAME TO IdealSoftTotalsStrategy''')
+        connection.commit()
+        # Rename SplitPairs to IdealSplitPairsStrategy
+        cursor.execute('''ALTER TABLE SplitPairs RENAME TO IdealSplitPairsStrategy''')
+        connection.commit()
         
         # Create and populate HardTotalsMemory table
         cls.create_empty_hard_totals_memory_table(db_path)
